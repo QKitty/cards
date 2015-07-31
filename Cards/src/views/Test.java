@@ -5,23 +5,24 @@
  */
 package views;
 
+import datamodel.enums.CardSuite;
+import datamodel.enums.CardValue;
+import datamodel.interfaces.ICard;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.swing.JSVGCanvas;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.svg.SVGDocument;
 import org.xml.sax.SAXException;
+import views.svg.CardFactory;
 
 /**
  *
@@ -46,17 +47,41 @@ public class Test extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        cardListViewer1 = new views.components.CardListPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout cardListViewer1Layout = new javax.swing.GroupLayout(cardListViewer1);
+        cardListViewer1.setLayout(cardListViewer1Layout);
+        cardListViewer1Layout.setHorizontalGroup(
+            cardListViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 407, Short.MAX_VALUE)
+        );
+        cardListViewer1Layout.setVerticalGroup(
+            cardListViewer1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 257, Short.MAX_VALUE)
+        );
+
+        jScrollPane1.setViewportView(cardListViewer1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -99,17 +124,40 @@ public class Test extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private views.components.CardListPanel cardListViewer1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
     private void loadCard() {
         try {
-            File tf = new File("C:\\Users\\rtucker\\Documents\\NetBeansProjects\\cards\\Cards\\src\\views\\svg\\cards\\10_of_clubs.svg");
-            Document doc = loadXMLFromFile(tf);
-
-            JSVGCanvas canvas = new JSVGCanvas();
-            canvas.setDocument(doc);
-            canvas.setBounds(0, 0, 100, 200);
-            this.getContentPane().add(canvas);
-//            this.jLabel1.setIcon(card);
+//            ICard card = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, true);
+//            Icon cardIcon = card.getCardIcon(100, 200);
+//            this.jLabel1.setIcon(cardIcon);
+            ICard card = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, true);
+            ICard card1 = CardFactory.createPlayingCard(CardSuite.DIAMONDS, CardValue.ACE, true);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
+            this.cardListViewer1.addCard(card);
+            this.cardListViewer1.addCard(card1);
         } catch (Exception ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //            this.jLabel1.setText(ex.getMessage());

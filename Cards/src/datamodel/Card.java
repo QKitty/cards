@@ -9,6 +9,8 @@ import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.SuiteColour;
 import datamodel.interfaces.ICard;
+import datamodel.interfaces.ICardIconGenerator;
+import datamodel.interfaces.SVGIconGenerator;
 import javax.swing.Icon;
 
 /**
@@ -20,11 +22,13 @@ public class Card implements ICard {
     
     private final CardSuite suite;
     private final CardValue value;
+    private final ICardIconGenerator iconCreator;
     private boolean showingFace;
     
     public Card(CardSuite newSuite, CardValue newValue){
         this.suite = newSuite;
         this.value = newValue;
+        this.iconCreator = new SVGIconGenerator();
         this.showingFace = false;
     }
     
@@ -72,13 +76,9 @@ public class Card implements ICard {
     public Icon getCardIcon(int width, int height) {
         Icon result = null;
         if(0 < (width * height)){
-            if(showingFace){
-                //Create Icon showing face
-            }else{
-                //Create Icon showing back of card
-            }
+            result = this.iconCreator.generateCardIcon(this, width, height);
         }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return result;
     }
 
     @Override
