@@ -84,4 +84,55 @@ public enum CardValue {
         return result;
     }
 
+    public static CardValue getCardValueFromInt(int aValue) {
+        CardValue result;
+        switch (aValue) {
+            case 2:
+                result = TWO;
+                break;
+            case 3:
+                result = THREE;
+                break;
+            case 4:
+                result = FOUR;
+                break;
+            case 5:
+                result = FIVE;
+                break;
+            case 6:
+                result = SIX;
+                break;
+            case 7:
+                result = SEVEN;
+                break;
+            case 8:
+                result = EIGHT;
+                break;
+            case 9:
+                result = NINE;
+                break;
+            case 10:
+                result = TEN;
+                break;
+            case 11:
+                result = JACK;
+                break;
+            case 12:
+                result = QUEEN;
+                break;
+            case 13:
+                result = KING;
+                break;
+            case 14:
+                result = JOKER_BLACK;
+                break;
+            case 15:
+                result = JOKER_RED;
+                break;
+            default:
+                result = ACE;
+        }
+        return result;
+    }
+
 }

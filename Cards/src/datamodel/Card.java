@@ -20,11 +20,14 @@ import javax.swing.Icon;
  */
 public class Card implements ICard {
     
+    // <editor-fold defaultstate="collapsed" desc="Attributes">
     private final CardSuite suite;
     private final CardValue value;
     private final ICardIconGenerator iconCreator;
     private boolean showingFace;
+    // </editor-fold>
     
+    // <editor-fold defaultstate="collapsed" desc="Constructors">
     public Card(CardSuite newSuite, CardValue newValue){
         this.suite = newSuite;
         this.value = newValue;
@@ -36,7 +39,9 @@ public class Card implements ICard {
         this(newSuite, newValue);
         this.showingFace = showFace;
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="ICard interface implementation">
     @Override
     public boolean isFaceCard() {
         return this.value.isFaceCard();
@@ -90,5 +95,6 @@ public class Card implements ICard {
     public void setShowingFace(boolean flag) {
         this.showingFace = flag;
     }
+    // </editor-fold>
     
 }

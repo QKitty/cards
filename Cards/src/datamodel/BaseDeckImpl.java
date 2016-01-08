@@ -27,12 +27,27 @@ public class BaseDeckImpl implements IDeck {
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     protected BaseDeckImpl() {
     }
+    
+    protected BaseDeckImpl(IDeckAlgorithm algorithm) {
+        this();
+        this.cardAlgorithm = algorithm;
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="IDeckAlgorithm interface implementation">
     @Override
-    public int timeSinceLastFaceCard() {
-        return this.cardAlgorithm.timeSinceLastFaceCard();
+    public int cardsDrawnSinceLastSpecialCard() {
+        return this.cardAlgorithm.cardsDrawnSinceLastSpecialCard();
+    }
+    
+    @Override
+    public int getMaxCardDrawsBetweenSpecialCards() {
+        return this.cardAlgorithm.getMaxCardDrawsBetweenSpecialCards();
+    }
+
+    @Override
+    public void setMaxCardDrawsBetweenSpecialCards(int max)  throws IllegalArgumentException {
+        this.cardAlgorithm.setMaxCardDrawsBetweenSpecialCards(max);
     }
 
     @Override
@@ -58,6 +73,16 @@ public class BaseDeckImpl implements IDeck {
     @Override
     public CardAlgorithmCategory getAlgorithmCategory() {
         return this.cardAlgorithm.getAlgorithmCategory();
+    }
+    
+    @Override
+    public double getProbabilityOfSpecialCard() {
+        return this.cardAlgorithm.getProbabilityOfSpecialCard();
+    }
+
+    @Override
+    public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
+        this.cardAlgorithm.setProbabilityOfSpecialCard(probability);
     }
     // </editor-fold>
 
@@ -96,6 +121,10 @@ public class BaseDeckImpl implements IDeck {
         return result;
     }
     // </editor-fold>
+
+    
+
+    
 
     
 

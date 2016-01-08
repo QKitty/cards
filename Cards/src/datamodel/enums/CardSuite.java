@@ -10,16 +10,16 @@ package datamodel.enums;
  * @author rtucker
  */
 public enum CardSuite {
-    
+
     HEARTS,
     DIAMONDS,
     SPADES,
     CLUBS,
     NONE;
-    
-    public String getSuiteString(){
+
+    public String getSuiteString() {
         String result;
-        switch(this){
+        switch (this) {
             case CLUBS:
                 result = "clubs";
                 break;
@@ -37,5 +37,23 @@ public enum CardSuite {
         }
         return result;
     }
-    
+
+    public static CardSuite getSuiteFromInt(int aValue) {
+        CardSuite result;
+        switch (aValue) {
+            case 2:
+                result = DIAMONDS;
+                break;
+            case 3:
+                result = HEARTS;
+                break;
+            case 4:
+                result = SPADES;
+                break;
+            default:
+                result = CLUBS;
+        }
+        return result;
+    }
+
 }

@@ -21,7 +21,24 @@ public interface IDeckAlgorithm {
      * @return int being the number of non face cards drawn since the last
      * face card (0 if the last card drawn was a face card)
      */
-    public int timeSinceLastFaceCard();
+    public int cardsDrawnSinceLastSpecialCard();
+    
+    /**
+     * Accessor to retrieve the maximum number of cards that can be drawn
+     * randomly before a "special" card is drawn
+     * @return - int being the maximum number of non-special cards that can 
+     * be drawn before a special card appears. A zero (0) means that cards
+     * are always drawn without ensuring that a special card appears
+     */
+    public int getMaxCardDrawsBetweenSpecialCards();
+    
+    /**
+     * Accessor to set the maximum number of cards that can be drawn
+     * randomly before a "special" card is drawn
+     * @param max - being the maximum number of non-special cards that can 
+     * be drawn before a special card appears.
+     */
+    public void setMaxCardDrawsBetweenSpecialCards(int max) throws IllegalArgumentException;
     
     /**
      * Draws a card from the deck of cards.
@@ -55,5 +72,21 @@ public interface IDeckAlgorithm {
      * @return A CardAlgorithmCategory that describes the algorithm
      */
     CardAlgorithmCategory getAlgorithmCategory();
+    
+    /**
+     * Accessor to retrieve the probability of seeing a "Special face card" in
+     * normal use these are Kings or Queens only (not other face cards)
+     * @return double being a value between 0.0 and 1.0 representing the 
+     * probability that on the next random card draw one of the special
+     * face cards will be produced
+     */
+    double getProbabilityOfSpecialCard();
+    
+    /**
+     * Accessor method to set the probability of drawing a special card
+     * @param probability - double between 0.0 and 1.0 being the probability
+     * of drawing a special card when a random card is drawn
+     */
+    void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException;
     
 }
