@@ -25,6 +25,7 @@ public class Card implements ICard {
     private final CardValue value;
     private final ICardIconGenerator iconCreator;
     private boolean showingFace;
+    private boolean selected;
     // </editor-fold>
     
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -33,6 +34,7 @@ public class Card implements ICard {
         this.value = newValue;
         this.iconCreator = new SVGIconGenerator();
         this.showingFace = false;
+        this.selected = false;
     }
     
     public Card(CardSuite newSuite, CardValue newValue, boolean showFace){
@@ -95,6 +97,18 @@ public class Card implements ICard {
     public void setShowingFace(boolean flag) {
         this.showingFace = flag;
     }
+    
+    @Override
+    public boolean isSelected() {
+        return this.selected;
+    }
+
+    @Override
+    public void setSelected(boolean flag) {
+        this.selected = flag;
+    }
     // </editor-fold>
+
+    
     
 }

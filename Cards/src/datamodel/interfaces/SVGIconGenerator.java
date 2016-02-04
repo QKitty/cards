@@ -36,8 +36,8 @@ public class SVGIconGenerator implements ICardIconGenerator {
                 try (InputStream in = getClass().getResourceAsStream(path.toString())) {
                     InputSource inSource = new InputSource(in);
                     Document doc = this.loadXMLFromFile(inSource);
-                    SVGIcon backOfCard = new SVGIcon(doc, width, height);
-                    result = backOfCard;
+                    SVGIcon cardIcon = new SVGIcon(doc, width, height);
+                    result = cardIcon;
                 } catch (ParserConfigurationException | SAXException | IOException | TranscoderException ex) {
                     Logger.getLogger(SVGIconGenerator.class.getName()).log(Level.SEVERE, null, ex);
                 }

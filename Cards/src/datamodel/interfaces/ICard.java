@@ -66,4 +66,18 @@ public interface ICard {
      */
     public void setShowingFace(boolean flag);
     
+    /**
+     * Tests if a card has been marked as selected
+     * @return True if the card is to be treated as "selected" by the application,
+     * False otherwise.
+     */
+    public boolean isSelected();
+    
+    /**
+     * Marks this card as "selected" (or unselected) by the application
+     * @param flag - boolean True if the application should treat the card as selected,
+     * False otherwise.
+     */
+    public void setSelected(boolean flag);
+    
 }

@@ -93,7 +93,7 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
         return result;
     }
     
-    protected void updateTimeSinceLastSpecialCard(){
+    protected void resetTimeSinceLastSpecialCard(){
         this.intDrawsSinceLastSpecialCard = 0;
     }
     

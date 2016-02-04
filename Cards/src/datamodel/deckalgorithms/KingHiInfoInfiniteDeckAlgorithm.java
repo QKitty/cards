@@ -42,7 +42,7 @@ public class KingHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
         }
         result = this.biasCardValueToKing(result);
         if(this.checkIfKingOrQueenCard(result)){
-            this.updateTimeSinceLastSpecialCard();
+            this.resetTimeSinceLastSpecialCard();
         }else{
             this.intDrawsSinceLastSpecialCard++;
         }

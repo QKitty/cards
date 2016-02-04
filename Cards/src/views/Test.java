@@ -129,35 +129,15 @@ public class Test extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private void loadCard() {
         try {
-//            ICard card = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, true);
-//            Icon cardIcon = card.getCardIcon(100, 200);
-//            this.jLabel1.setIcon(cardIcon);
-            ICard card = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, true);
-            ICard card1 = CardFactory.createPlayingCard(CardSuite.DIAMONDS, CardValue.ACE, true);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
-            this.cardListViewer1.addCard(card);
-            this.cardListViewer1.addCard(card1);
+            for(int i = 0; i < 24; i++){
+                ICard card;
+                if(0 == i % 2){
+                    card = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, true);
+                }else{
+                    card = CardFactory.createPlayingCard(CardSuite.DIAMONDS, CardValue.ACE, true);
+                }
+                this.cardListViewer1.addCard(card);
+            }
         } catch (Exception ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //            this.jLabel1.setText(ex.getMessage());
