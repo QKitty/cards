@@ -5,6 +5,7 @@
  */
 package views.components;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
@@ -13,27 +14,42 @@ import datamodel.exceptions.NotAnAlgorithmicDeckException;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
+import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.swing.Icon;
+import views.animations.CardDrawingAnimation;
 import views.svg.CardFactory;
 
 /**
  *
  * @author rtucker
  */
-public class CardDeckPanel extends javax.swing.JPanel implements IDeck {
+public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserver<Void> {
 
-    private IDeck panelDeck;
-    private final ICard dumbyBackCard;
+    private ICard dumbyBackCard;
+    private IDeck myCardDeck;
+    private ScheduledExecutorService tp;
+    private CardDrawingAnimation currAnimation;
 
     /**
      * Creates new form CardDeckPanel
      */
     public CardDeckPanel() {
         initComponents();
-        dumbyBackCard = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, false);
-        Icon cardIcon = dumbyBackCard.getCardIcon(lblCardBack.getWidth(), lblCardBack.getHeight());
-        lblCardBack.setIcon(cardIcon);
+        drawnCardsPanel.registerObserver(this);
+        tp = Executors.newSingleThreadScheduledExecutor();
+        java.awt.EventQueue.invokeLater(() -> {
+            setIcon();
+        });
+        jScrollPane1.setMaximumSize(jScrollPane1.getPreferredSize());
+        System.out.println("Size JSCROLL" + jScrollPane1.getPreferredSize().toString());
     }
 
     /**
@@ -45,150 +61,216 @@ public class CardDeckPanel extends javax.swing.JPanel implements IDeck {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cardListPanel1 = new views.components.CardListPanel();
         lblCardBack = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        drawnCardsPanel = new views.components.CardListPanel();
 
-        cardListPanel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        lblCardBack.setToolTipText("");
+        dumbyBackCard = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, false);
+        Icon cardIcon = dumbyBackCard.getCardIcon(lblCardBack.getWidth(), lblCardBack.getHeight());
+        lblCardBack.setIcon(cardIcon);
+        lblCardBack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCardBackMouseClicked(evt);
+            }
+        });
 
-        lblCardBack.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        drawnCardsPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        jScrollPane1.setViewportView(drawnCardsPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(cardListPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(lblCardBack, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(lblCardBack, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(77, 77, 77))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblCardBack, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cardListPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblCardBack, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void lblCardBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCardBackMouseClicked
+        if(evt.getClickCount() == 2){
+            startCardAnimation();
+        }
+    }//GEN-LAST:event_lblCardBackMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private views.components.CardListPanel cardListPanel1;
+    private views.components.CardListPanel drawnCardsPanel;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCardBack;
     // End of variables declaration//GEN-END:variables
 
-    public void setDeck(IDeck aDeck) {
-        if (null != aDeck) {
-            this.panelDeck = aDeck;
-        }
+    private void setIcon() {
+        dumbyBackCard = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, false);
+        Icon cardIcon = dumbyBackCard.getCardIcon(lblCardBack.getWidth(), lblCardBack.getHeight());
+        lblCardBack.setIcon(cardIcon);
         repaint();
     }
 
+    public void setCardDeck(IDeck aDeck) {
+        if (null != aDeck) {
+            myCardDeck = aDeck;
+            drawnCardsPanel.clearCardList();
+        }
+    }
+
+//<editor-fold defaultstate="collapsed" desc="IDeck interface implementation">
     @Override
     public boolean isAlgorithmic() {
-        boolean result = false;
-        if (null != panelDeck) {
-            result = panelDeck.isAlgorithmic();
-        }
-        return result;
+        return myCardDeck.isAlgorithmic();
     }
 
     @Override
     public IDeckAlgorithm getDeckAlgorithm() throws NotAnAlgorithmicDeckException {
-        return panelDeck.getDeckAlgorithm();
+        return myCardDeck.getDeckAlgorithm();
     }
 
     @Override
     public boolean setDeckAlgorithm(IDeckAlgorithm alg) throws NotAnAlgorithmicDeckException {
-        boolean result = false;
-        if (null != alg) {
-            result = panelDeck.setDeckAlgorithm(alg);
-        }
-        return result;
+        return myCardDeck.setDeckAlgorithm(alg);
+    }
+    
+    @Override
+    public List<ICard> getDrawnCardList() {
+        return myCardDeck.getDrawnCardList();
     }
 
     @Override
     public int cardsDrawnSinceLastSpecialCard() {
-        int result = 0;
-        if(null != panelDeck){
-            result = panelDeck.cardsDrawnSinceLastSpecialCard();
-        }
-        return result;
+        return myCardDeck.cardsDrawnSinceLastSpecialCard();
     }
 
     @Override
     public int getMaxCardDrawsBetweenSpecialCards() {
-        int result = 0;
-        if(null != panelDeck){
-            result = panelDeck.getMaxCardDrawsBetweenSpecialCards();
-        }
-        return result;
+        return myCardDeck.getMaxCardDrawsBetweenSpecialCards();
     }
 
     @Override
     public void setMaxCardDrawsBetweenSpecialCards(int max) throws IllegalArgumentException {
-        if(max >= 0){
-            panelDeck.setMaxCardDrawsBetweenSpecialCards(max);
-        } else {
-            throw new IllegalArgumentException("Draws between special face cards can't be negative");
-        }
+        myCardDeck.setMaxCardDrawsBetweenSpecialCards(max);
     }
 
     @Override
     public ICard drawCard() {
-        ICard result = null;
-        if(null != panelDeck){
-            result = panelDeck.drawCard();
-        }
-        return result;
+        return myCardDeck.drawCard();
     }
 
     @Override
     public boolean hasCardsRemaining() {
-        boolean result = false;
-        if(null != panelDeck){
-            result = panelDeck.hasCardsRemaining();
-        }
-        return result;
+        return myCardDeck.hasCardsRemaining();
     }
 
     @Override
     public int getNoOfRemainingCards() {
-        int result = 0;
-        if(null != panelDeck){
-            result= panelDeck.getNoOfRemainingCards();
-        }
-        return result;
+        return myCardDeck.getNoOfRemainingCards();
     }
 
     @Override
     public DeckType getDeckType() {
-        DeckType result = null;
-        if(null != panelDeck){
-            result = panelDeck.getDeckType();
-        }
-        return result;
+        return myCardDeck.getDeckType();
     }
 
     @Override
     public CardAlgorithmCategory getAlgorithmCategory() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return myCardDeck.getAlgorithmCategory();
     }
 
     @Override
     public double getProbabilityOfSpecialCard() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return myCardDeck.getProbabilityOfSpecialCard();
     }
 
     @Override
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        myCardDeck.setProbabilityOfSpecialCard(probability);
+    }
+//</editor-fold>
+
+    private void startCardAnimation() {
+        if(null != myCardDeck){
+            //Draw Card
+            ICard nextCard = myCardDeck.drawCard();
+            nextCard.setShowingFace(true);
+            //<editor-fold defaultstate="collapsed" desc="Sort out animation later">
+//            CardDrawingAnimation anim = new CardDrawingAnimation(nextCard, lblCardBack.getLocation(), drawnCardsPanel.getLocation().y, 10l, drawnCardsPanel, this);
+//            tp.schedule(anim, 1l, TimeUnit.SECONDS);
+//            currAnimation = anim;
+//</editor-fold>
+            drawnCardsPanel.replaceList(myCardDeck.getDrawnCardList());
+            this.repaint();
+        }
+    }
+    
+    public void destroy(){
+        if(!tp.isShutdown()){
+            tp.shutdownNow();
+        }
     }
 
+    @Override
+    protected void paintComponent(Graphics grphcs) {
+        super.paintComponent(grphcs); //To change body of generated methods, choose Tools | Templates.
+        if(null != currAnimation && !currAnimation.isComplete()){
+            BufferedImage cardImg = currAnimation.getRenderImage();
+            Point renderPoint = currAnimation.getRenderPoint();
+            grphcs.drawImage(cardImg, renderPoint.x, renderPoint.y, null);
+        }
+    }
+
+    @Override
+    public void update() {
+        revalidate();
+        repaint();
+    }
+
+//<editor-fold defaultstate="collapsed" desc="ISubject interface for IDeck">
+    @Override
+    public boolean registerObserver(IObserver o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public boolean removeObserver(IObserver o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public void notifyObservers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public <T> void notifyObservers(T data) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Set<IObserver> removeAllObservers() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+//</editor-fold>
+
+    
+    
+    
 }

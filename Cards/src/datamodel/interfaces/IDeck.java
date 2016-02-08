@@ -5,13 +5,15 @@
  */
 package datamodel.interfaces;
 
+import com.gmail.qkitty6.patterns.observer.ISubject;
 import datamodel.exceptions.NotAnAlgorithmicDeckException;
+import java.util.List;
 
 /**
  * This interface represents the abstract concept of a pack of playing cards
  * @author rtucker
  */
-public interface IDeck extends IDeckAlgorithm {
+public interface IDeck extends IDeckAlgorithm, ISubject {
     
     /**
      * Accessor to test if this deck uses an algorithm to generate its cards
@@ -39,5 +41,11 @@ public interface IDeck extends IDeckAlgorithm {
      * support the use of algorithms to generate cards.
      */
     boolean setDeckAlgorithm(IDeckAlgorithm alg) throws NotAnAlgorithmicDeckException;
+    
+    /**
+     * Retrieves a list of all the cards that have been drawn from this deck so far.
+     * @return A list of drawn cards
+     */
+    List<ICard> getDrawnCardList();
     
 }

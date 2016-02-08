@@ -33,12 +33,12 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
 
     // <editor-fold defaultstate="collapsed" desc="Class Attributes">
     private final List<ICard> cardList;
-    
+
     private final static double CARD_OVERLAP_PERC = 0.2d;
     private final static double BASE_CARD_WIDTH = 100d;
     private final HashMap<ICard, RectangleZ> renderArea;
     private final ISubject observers;
-    
+
     public final static int Y_ERROR = 27;
     public final static int HEIGHT_ERROR = 55;
     // </editor-fold>
@@ -57,6 +57,20 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
         this.addMouseMotionListener(mouseActions);
         this.addMouseWheelListener(mouseActions);
     }
+
+    @Override
+    public void setPreferredSize(Dimension dmnsn) {
+        super.setPreferredSize(dmnsn); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Setting prefered size of: " + dmnsn.toString());
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        System.out.println("Getting prefered size of: " + super.getPreferredSize().toString());
+        return super.getPreferredSize(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,10 +99,9 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
         }
         this.resizeBasedOnListContents();
         this.notifyObservers();
-        //repaint();
         return result;
     }
-    
+
     public boolean addCard(ICard aCard) {
         boolean result = false;
         if (null != aCard) {
@@ -96,10 +109,9 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
         }
         this.resizeBasedOnListContents();
         this.notifyObservers();
-        //repaint();
         return result;
     }
-    
+
     public boolean removeCard(ICard aCard) {
         boolean result = false;
         if (null != aCard) {
@@ -109,23 +121,21 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
         }
         this.resizeBasedOnListContents();
         this.notifyObservers();
-        //repaint();
         return result;
     }
-    
+
     public int cardListSize() {
         return cardList.size();
     }
-    
+
     public ListIterator<ICard> listIterator() {
         return cardList.listIterator();
     }
-    
+
     public void clearCardList() {
         cardList.clear();
         this.resizeBasedOnListContents();
         this.notifyObservers();
-        //repaint();
     }
     // </editor-fold>
 
@@ -140,11 +150,11 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs); //To change body of generated methods, choose Tools | Templates.
-        
+
         Dimension size = this.getSize();
         grphcs.clearRect(0, 0, size.width, size.height);
         Double dblCardWidth = BASE_CARD_WIDTH;
-        
+
         Double dblStep = CARD_OVERLAP_PERC * dblCardWidth;
         int cardWidth = dblCardWidth.intValue();
         int cardHeight = cardWidth * 2;
@@ -176,27 +186,27 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
     public boolean registerObserver(IObserver o) {
         return this.observers.registerObserver(o);
     }
-    
+
     @Override
     public boolean removeObserver(IObserver o) {
         return this.observers.removeObserver(o);
     }
-    
+
     @Override
     public void notifyObservers() {
         this.observers.notifyObservers();
     }
-    
+
     @Override
     public <T> void notifyObservers(T data) {
         this.observers.notifyObservers(data);
     }
-    
+
     @Override
     public Set<IObserver> removeAllObservers() {
         return this.observers.removeAllObservers();
     }
-    
+
     @Override
     public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
         return this.observers.registerObserver(observerCollection);
@@ -210,14 +220,17 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
         int newWidth = 1 + dblReqWidth.intValue();
         int newHeight = 1 + (Double.valueOf(BASE_CARD_WIDTH).intValue() * 2);
         Dimension newDim = new Dimension(newWidth, newHeight);
+        this.setMinimumSize(newDim);
+        this.setMaximumSize(newDim);
         this.setPreferredSize(newDim);
-        this.invalidate();
+        this.revalidate();
+        this.repaint();
     }
     // </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Card List Mouse Listener">
     private class CardListPanelMouseActions extends MouseAdapter {
-        
+
         @Override
         public void mouseClicked(MouseEvent me) {
             if (0 < cardListSize()) {
@@ -232,9 +245,11 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
                         }
                     }
                 }
-                List<RectangleZ> toSort = new ArrayList<>(selectable.keySet());
-                Collections.sort(toSort);
-                selectable.get(toSort.get(toSort.size() - 1)).setSelected(true);
+                if (0 < selectable.size()) {
+                    List<RectangleZ> toSort = new ArrayList<>(selectable.keySet());
+                    Collections.sort(toSort);
+                    selectable.get(toSort.get(toSort.size() - 1)).setSelected(true);
+                }
                 repaint();
             }
         }

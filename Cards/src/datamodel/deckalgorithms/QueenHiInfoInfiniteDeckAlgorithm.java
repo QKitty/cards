@@ -14,20 +14,19 @@ import datamodel.interfaces.ICard;
 import java.util.Random;
 
 /**
- * This is the concrete implementation for a deck of playing cards that
- * favours producing King cards with a high frequency
+ *
  * @author rtucker
  */
-public class KingHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
+public class QueenHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
     
     private Random rng;
     
-    public KingHiInfoInfiniteDeckAlgorithm(){
+    public QueenHiInfoInfiniteDeckAlgorithm(){
         super();
         this.rng = new Random();
     }
     
-    public KingHiInfoInfiniteDeckAlgorithm(int maxCardsBetweenSpecialCard){
+    public QueenHiInfoInfiniteDeckAlgorithm(int maxCardsBetweenSpecialCard){
         this();
         this.intMaxCardDrawsBetweenSpecialCard = maxCardsBetweenSpecialCard;
     }
@@ -40,7 +39,7 @@ public class KingHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
         }else{
             result = this.createNormalCard();
         }
-        result = this.biasCardValueToKing(result);
+        result = this.biasCardValueToQueen(result);
         if(this.checkIfKingOrQueenCard(result)){
             this.resetTimeSinceLastSpecialCard();
         }else{
@@ -66,7 +65,7 @@ public class KingHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
 
     @Override
     public CardAlgorithmCategory getAlgorithmCategory() {
-        return CardAlgorithmCategory.KING_HI_INFORMATIVE;
+        return CardAlgorithmCategory.QUEEN_HI_INFORMATIVE;
     }
 
     @Override
@@ -90,14 +89,13 @@ public class KingHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
         result = new Card(mySuite, myValue, true);
         return result;
     }
-    
-    //Bias gives a 2/3 chance that a queen card becomes a king
-    private ICard biasCardValueToKing(ICard aCard){
+
+    private ICard biasCardValueToQueen(ICard aCard) {
         ICard result = aCard;
-        if(CardValue.QUEEN == aCard.getValue()){
+        if(CardValue.KING == aCard.getValue()){
             int intValue = this.rng.nextInt(6) + 1;
             if(intValue >= 3){
-                result = new Card(aCard.getSuite(), CardValue.KING);
+                result = new Card(aCard.getSuite(), CardValue.QUEEN);
             }
         }
         return result;

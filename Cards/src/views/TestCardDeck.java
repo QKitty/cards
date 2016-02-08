@@ -5,6 +5,9 @@
  */
 package views;
 
+import datamodel.BaseDeckImpl;
+import datamodel.deckalgorithms.KingHiInfoInfiniteDeckAlgorithm;
+
 /**
  *
  * @author rtucker
@@ -16,6 +19,8 @@ public class TestCardDeck extends javax.swing.JFrame {
      */
     public TestCardDeck() {
         initComponents();
+        BaseDeckImpl deck = new BaseDeckImpl(new KingHiInfoInfiniteDeckAlgorithm());
+        pnlCardDeck.setCardDeck(deck);
     }
 
     /**
@@ -27,7 +32,7 @@ public class TestCardDeck extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cardDeckPanel1 = new views.components.CardDeckPanel();
+        pnlCardDeck = new views.components.CardDeckPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -35,17 +40,17 @@ public class TestCardDeck extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cardDeckPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(49, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlCardDeck, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cardDeckPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pnlCardDeck, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -87,6 +92,6 @@ public class TestCardDeck extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private views.components.CardDeckPanel cardDeckPanel1;
+    private views.components.CardDeckPanel pnlCardDeck;
     // End of variables declaration//GEN-END:variables
 }

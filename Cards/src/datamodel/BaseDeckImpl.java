@@ -5,12 +5,19 @@
  */
 package datamodel;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
+import com.gmail.qkitty6.patterns.observer.ISubject;
+import com.gmail.qkitty6.patterns.observer.ISubjectImpl;
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.DeckType;
 import datamodel.exceptions.NotAnAlgorithmicDeckException;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Concrete implementation of the IDeck interface. Represents a pack of playing
@@ -22,13 +29,17 @@ public class BaseDeckImpl implements IDeck {
 
     // <editor-fold defaultstate="collapsed" desc="Class Attributes">
     protected IDeckAlgorithm cardAlgorithm;
+    protected List<ICard> drawnCards;
+    protected ISubject observers;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Constructors">
-    protected BaseDeckImpl() {
+    public BaseDeckImpl() {
+        this.drawnCards = new ArrayList<>();
+        observers = new ISubjectImpl();
     }
     
-    protected BaseDeckImpl(IDeckAlgorithm algorithm) {
+    public BaseDeckImpl(IDeckAlgorithm algorithm) {
         this();
         this.cardAlgorithm = algorithm;
     }
@@ -44,24 +55,26 @@ public class BaseDeckImpl implements IDeck {
     public int getMaxCardDrawsBetweenSpecialCards() {
         return this.cardAlgorithm.getMaxCardDrawsBetweenSpecialCards();
     }
-
+    
     @Override
-    public void setMaxCardDrawsBetweenSpecialCards(int max)  throws IllegalArgumentException {
+    public void setMaxCardDrawsBetweenSpecialCards(int max) throws IllegalArgumentException {
         this.cardAlgorithm.setMaxCardDrawsBetweenSpecialCards(max);
     }
-
+    
     @Override
-    public ICard drawCard(){
-        return this.cardAlgorithm.drawCard();
+    public ICard drawCard() {
+        ICard drawnCard = this.cardAlgorithm.drawCard();
+        drawnCards.add(drawnCard);
+        return drawnCard;
     }
-
+    
     @Override
-    public boolean hasCardsRemaining(){
+    public boolean hasCardsRemaining() {
         return this.cardAlgorithm.hasCardsRemaining();
     }
-
+    
     @Override
-    public int getNoOfRemainingCards(){
+    public int getNoOfRemainingCards() {
         return this.cardAlgorithm.getNoOfRemainingCards();
     }
     
@@ -69,7 +82,7 @@ public class BaseDeckImpl implements IDeck {
     public DeckType getDeckType() {
         return this.cardAlgorithm.getDeckType();
     }
-
+    
     @Override
     public CardAlgorithmCategory getAlgorithmCategory() {
         return this.cardAlgorithm.getAlgorithmCategory();
@@ -79,7 +92,7 @@ public class BaseDeckImpl implements IDeck {
     public double getProbabilityOfSpecialCard() {
         return this.cardAlgorithm.getProbabilityOfSpecialCard();
     }
-
+    
     @Override
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
         this.cardAlgorithm.setProbabilityOfSpecialCard(probability);
@@ -95,7 +108,7 @@ public class BaseDeckImpl implements IDeck {
         }
         return result;
     }
-
+    
     @Override
     public final IDeckAlgorithm getDeckAlgorithm() throws NotAnAlgorithmicDeckException {
         IDeckAlgorithm result = null;
@@ -106,7 +119,7 @@ public class BaseDeckImpl implements IDeck {
         }
         return result;
     }
-
+    
     @Override
     public final boolean setDeckAlgorithm(IDeckAlgorithm alg) throws NotAnAlgorithmicDeckException {
         boolean result = false;
@@ -120,12 +133,42 @@ public class BaseDeckImpl implements IDeck {
         }
         return result;
     }
+    
+    @Override
+    public List<ICard> getDrawnCardList() {
+        return new ArrayList<>(drawnCards);
+    }
     // </editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Observer implementation">
+    @Override
+    public boolean registerObserver(IObserver o) {
+        return observers.registerObserver(o);
+    }
     
-
+    @Override
+    public boolean removeObserver(IObserver o) {
+        return observers.removeObserver(o);
+    }
     
-
+    @Override
+    public void notifyObservers() {
+        observers.notifyObservers();
+    }
     
-
+    @Override
+    public <T> void notifyObservers(T data) {
+        observers.notifyObservers(data);
+    }
+    
+    @Override
+    public Set<IObserver> removeAllObservers() {
+        return observers.removeAllObservers();
+    }
+    
+    @Override
+    public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
+        return observers.registerObserver(observerCollection);
+    }
+    //</editor-fold>
 }
