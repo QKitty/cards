@@ -89,4 +89,10 @@ public interface IDeckAlgorithm {
      */
     void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException;
     
+    /**
+     * Resets the card deck and card deck algorithm so no cards have been drawn
+     * and the deck can be re-used.
+     */
+    void reset();
+    
 }

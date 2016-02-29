@@ -14,42 +14,31 @@ import datamodel.exceptions.NotAnAlgorithmicDeckException;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
+import java.awt.Insets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.swing.Icon;
-import views.animations.CardDrawingAnimation;
+import javax.swing.border.Border;
 import views.svg.CardFactory;
 
 /**
  *
- * @author rtucker
+ * @author qkitt
  */
-public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserver<Void> {
-
+public class LastCardDrawnPanel extends javax.swing.JPanel implements IDeck, IObserver<Void> {
+    
     private ICard dumbyBackCard;
     private IDeck myCardDeck;
-    private ScheduledExecutorService tp;
-    private CardDrawingAnimation currAnimation;
 
     /**
-     * Creates new form CardDeckPanel
+     * Creates new form TotalsCardPanel
      */
-    public CardDeckPanel() {
+    public LastCardDrawnPanel() {
         initComponents();
-        drawnCardsPanel.registerObserver(this);
-        tp = Executors.newSingleThreadScheduledExecutor();
         java.awt.EventQueue.invokeLater(() -> {
             setIcon();
         });
-        jScrollPane1.setMaximumSize(jScrollPane1.getPreferredSize());
-        System.out.println("Size JSCROLL" + jScrollPane1.getPreferredSize().toString());
     }
 
     /**
@@ -62,57 +51,58 @@ public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserve
     private void initComponents() {
 
         lblCardBack = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        drawnCardsPanel = new views.components.CardListPanel();
+        lblLastCard = new javax.swing.JLabel();
 
-        lblCardBack.setToolTipText("");
-        dumbyBackCard = CardFactory.createPlayingCard(CardSuite.CLUBS, CardValue.ACE, false);
-        Icon cardIcon = dumbyBackCard.getCardIcon(lblCardBack.getWidth(), lblCardBack.getHeight());
-        lblCardBack.setIcon(cardIcon);
         lblCardBack.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblCardBackMouseClicked(evt);
             }
         });
 
-        drawnCardsPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        jScrollPane1.setViewportView(drawnCardsPanel);
+        lblLastCard.setToolTipText("");
+        lblLastCard.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblCardBack, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(77, 77, 77))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                .addGap(57, 57, 57)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblLastCard, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                    .addComponent(lblCardBack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(lblCardBack, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(lblCardBack, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblLastCard, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblCardBackMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCardBackMouseClicked
-        if(evt.getClickCount() == 2){
-            startCardAnimation();
+        // TODO add your handling code here:
+        if(null != myCardDeck && evt.getClickCount() == 2){
+            //Draw Card
+            ICard nextCard = myCardDeck.drawCard();
+            nextCard.setShowingFace(true);
+            Border border = lblLastCard.getBorder();
+            Insets borderInsets = border.getBorderInsets(lblLastCard);
+            int w = lblLastCard.getWidth() - (borderInsets.left + borderInsets.right);
+            int h = lblLastCard.getHeight() - (borderInsets.top + borderInsets.bottom);
+            lblLastCard.setIcon(nextCard.getCardIcon(w, h));
+            repaint();
         }
     }//GEN-LAST:event_lblCardBackMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private views.components.CardListPanel drawnCardsPanel;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCardBack;
+    private javax.swing.JLabel lblLastCard;
     // End of variables declaration//GEN-END:variables
 
     private void setIcon() {
@@ -121,12 +111,17 @@ public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserve
         lblCardBack.setIcon(cardIcon);
         repaint();
     }
-
+    
     public void setCardDeck(IDeck aDeck) {
         if (null != aDeck) {
             myCardDeck = aDeck;
-            drawnCardsPanel.clearCardList();
         }
+    }
+    
+    @Override
+    public void update() {
+        revalidate();
+        repaint();
     }
 
 //<editor-fold defaultstate="collapsed" desc="IDeck interface implementation">
@@ -199,53 +194,21 @@ public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserve
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
         myCardDeck.setProbabilityOfSpecialCard(probability);
     }
-//</editor-fold>
-
-    private void startCardAnimation() {
-        if(null != myCardDeck){
-            //Draw Card
-            ICard nextCard = myCardDeck.drawCard();
-            nextCard.setShowingFace(true);
-            //<editor-fold defaultstate="collapsed" desc="Sort out animation later">
-//            CardDrawingAnimation anim = new CardDrawingAnimation(nextCard, lblCardBack.getLocation(), drawnCardsPanel.getLocation().y, 10l, drawnCardsPanel, this);
-//            tp.schedule(anim, 1l, TimeUnit.SECONDS);
-//            currAnimation = anim;
-//</editor-fold>
-            drawnCardsPanel.replaceList(myCardDeck.getDrawnCardList());
-            this.repaint();
-        }
-    }
     
-    public void destroy(){
-        if(!tp.isShutdown()){
-            tp.shutdownNow();
-        }
-    }
-
     @Override
-    protected void paintComponent(Graphics grphcs) {
-        super.paintComponent(grphcs); //To change body of generated methods, choose Tools | Templates.
-        if(null != currAnimation && !currAnimation.isComplete()){
-            BufferedImage cardImg = currAnimation.getRenderImage();
-            Point renderPoint = currAnimation.getRenderPoint();
-            grphcs.drawImage(cardImg, renderPoint.x, renderPoint.y, null);
-        }
+    public void reset(){
+        this.myCardDeck.reset();
     }
-
-    @Override
-    public void update() {
-        revalidate();
-        repaint();
-    }
+//</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="ISubject interface for IDeck">
     @Override
-    public boolean registerObserver(IObserver o) {
+    public boolean registerObserver(IObserver io) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
-    public boolean removeObserver(IObserver o) {
+    public boolean removeObserver(IObserver io) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -255,7 +218,7 @@ public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserve
     }
     
     @Override
-    public <T> void notifyObservers(T data) {
+    public <T> void notifyObservers(T t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -265,12 +228,9 @@ public class CardDeckPanel extends javax.swing.JPanel implements IDeck, IObserve
     }
     
     @Override
-    public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
+    public boolean registerObserver(Collection<? extends IObserver> clctn) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 //</editor-fold>
 
-    
-    
-    
 }

@@ -100,5 +100,10 @@ public class QueenHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
         }
         return result;
     }
+
+    @Override
+    public void reset() {
+        //No reset action needed
+    }
     
 }

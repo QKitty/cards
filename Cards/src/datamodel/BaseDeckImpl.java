@@ -97,6 +97,13 @@ public class BaseDeckImpl implements IDeck {
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
         this.cardAlgorithm.setProbabilityOfSpecialCard(probability);
     }
+    
+    @Override
+    public void reset(){
+        this.cardAlgorithm.reset();
+        this.drawnCards.clear();
+        this.observers.notifyObservers();
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="IDeck interface implementation">
