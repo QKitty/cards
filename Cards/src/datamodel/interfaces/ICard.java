@@ -8,13 +8,14 @@ package datamodel.interfaces;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.SuiteColour;
+import java.io.Serializable;
 import javax.swing.Icon;
 
 /**
  * This interface represents the abstract concept of a playing card
  * @author rtucker
  */
-public interface ICard {
+public interface ICard extends Serializable, IXMLPersistable {
     
     /**
      * Tests to determine if this is a 'face' card. Face cards are:

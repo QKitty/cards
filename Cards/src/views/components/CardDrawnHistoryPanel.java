@@ -10,7 +10,6 @@ import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
-import datamodel.exceptions.NotAnAlgorithmicDeckException;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
@@ -135,12 +134,12 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
     }
 
     @Override
-    public IDeckAlgorithm getDeckAlgorithm() throws NotAnAlgorithmicDeckException {
+    public IDeckAlgorithm getDeckAlgorithm() {
         return myCardDeck.getDeckAlgorithm();
     }
 
     @Override
-    public boolean setDeckAlgorithm(IDeckAlgorithm alg) throws NotAnAlgorithmicDeckException {
+    public boolean setDeckAlgorithm(IDeckAlgorithm alg) {
         return myCardDeck.setDeckAlgorithm(alg);
     }
     

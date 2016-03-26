@@ -56,4 +56,28 @@ public enum CardSuite {
         return result;
     }
 
+    @Override
+    public String toString() {
+        String result;
+        switch (this) {
+            case CLUBS:
+                result = "Clubs";
+                break;
+            case DIAMONDS:
+                result = "Diamonds";
+                break;
+            case HEARTS:
+                result = "Hearts";
+                break;
+            case SPADES:
+                result = "Spades";
+                break;
+            default:
+                result = "";
+        }
+        return result;
+    }
+    
+    
+
 }

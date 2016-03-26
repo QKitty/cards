@@ -13,20 +13,21 @@ import datamodel.interfaces.IDeckAlgorithm;
 /**
  * Abstract base class from which deck algorithms should inherit. Provides
  * utility methods to assist algorithm implementation
+ *
  * @author rtucker
  */
 public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
-    
+
     protected int intDrawsSinceLastSpecialCard;
     protected int intMaxCardDrawsBetweenSpecialCard;
     protected double dblProbOfSpecialCard;
-    
-    public BaseDeckAlgorithm(){
+
+    public BaseDeckAlgorithm() {
         this.intDrawsSinceLastSpecialCard = 0;
         this.intMaxCardDrawsBetweenSpecialCard = 5;
     }
-    
-    public BaseDeckAlgorithm(int maxCardsBetweenSpecialCard){
+
+    public BaseDeckAlgorithm(int maxCardsBetweenSpecialCard) {
         this.intDrawsSinceLastSpecialCard = 0;
         this.intMaxCardDrawsBetweenSpecialCard = maxCardsBetweenSpecialCard;
     }
@@ -35,15 +36,15 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
     public int cardsDrawnSinceLastSpecialCard() {
         return this.intDrawsSinceLastSpecialCard;
     }
-    
+
     @Override
     public int getMaxCardDrawsBetweenSpecialCards() {
         return this.intMaxCardDrawsBetweenSpecialCard;
     }
 
     @Override
-    public void setMaxCardDrawsBetweenSpecialCards(int max)  throws IllegalArgumentException {
-        if(0 > max){
+    public void setMaxCardDrawsBetweenSpecialCards(int max) throws IllegalArgumentException {
+        if (0 > max) {
             throw new IllegalArgumentException("Maximum number of cards drawn between special cards must be positive");
         }
         this.intMaxCardDrawsBetweenSpecialCard = max;
@@ -63,7 +64,7 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
 
     @Override
     public abstract CardAlgorithmCategory getAlgorithmCategory();
-    
+
     @Override
     public double getProbabilityOfSpecialCard() {
         return this.dblProbOfSpecialCard;
@@ -71,17 +72,17 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
 
     @Override
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
-        if(0.0d <= probability && 1.0d >= probability){
+        if (0.0d <= probability && 1.0d >= probability) {
             throw new IllegalArgumentException("Probability of drawing a special card must be between 0 and 1");
         }
         this.dblProbOfSpecialCard = probability;
     }
-    
-    protected boolean checkIfKingOrQueenCard(ICard aCard){
+
+    protected boolean checkIfKingOrQueenCard(ICard aCard) {
         boolean result = false;
-        if(null != aCard){
-            if(aCard.isFaceCard()){
-                switch(aCard.getValue()){
+        if (null != aCard) {
+            if (aCard.isFaceCard()) {
+                switch (aCard.getValue()) {
                     case KING:
                         result = true;
                         break;
@@ -92,13 +93,27 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
         }
         return result;
     }
-    
-    protected void resetTimeSinceLastSpecialCard(){
+
+    protected void resetTimeSinceLastSpecialCard() {
         this.intDrawsSinceLastSpecialCard = 0;
     }
-    
+
     protected abstract ICard createSpecialCard();
-    
+
     protected abstract ICard createNormalCard();
+
+    @Override
+    public abstract boolean isAlgorithmic();
+
+//<editor-fold defaultstate="collapsed" desc="IXMLPersistable Interface">
+    @Override
+    public abstract Class<?> getFactoryClass();
     
+    @Override
+    public abstract String getFactoryMethodName();
+    
+    @Override
+    public abstract Object[] getFactoryArgs();
+//</editor-fold>
+
 }

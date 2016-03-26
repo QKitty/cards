@@ -11,6 +11,7 @@ import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
 import datamodel.interfaces.ICard;
+import datamodel.persistance.DeckAlgorithmFactory;
 import java.util.Random;
 
 /**
@@ -104,6 +105,28 @@ public class QueenHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
     @Override
     public void reset() {
         //No reset action needed
+    }
+
+    @Override
+    public boolean isAlgorithmic() {
+        return true;
+    }
+
+    @Override
+    public Class<?> getFactoryClass() {
+        return DeckAlgorithmFactory.class;
+    }
+
+    @Override
+    public String getFactoryMethodName() {
+        return "createQueenHiInfoInfiniteDeckAlgorithm";
+    }
+
+    @Override
+    public Object[] getFactoryArgs() {
+        Object[] result = new Object[1];
+        result[0] = this.intMaxCardDrawsBetweenSpecialCard;
+        return result;
     }
     
 }

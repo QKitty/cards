@@ -5,9 +5,16 @@
  */
 package datamodel.deckalgorithms;
 
+import datamodel.Card;
 import datamodel.enums.CardAlgorithmCategory;
+import datamodel.enums.CardSuite;
+import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
 import datamodel.interfaces.ICard;
+import datamodel.persistance.DeckAlgorithmFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -46,15 +53,49 @@ public class FrequencyInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
     @Override
     public ICard drawCard() {
         ICard result;
-        if (this.intDrawsSinceLastSpecialCard >= this.intMaxCardDrawsBetweenSpecialCard) {
-            result = this.createSpecialCard();
+        double currKingFreq, currQueenFreq, currOtherFreq;
+        double deltaKingFreq, deltaQueenFreq, deltaOtherFreq;
+        currKingFreq = calcCurrFreq(this.intKingsDrawn);
+        currQueenFreq = calcCurrFreq(this.intQueensDrawn);
+        currOtherFreq = calcCurrFreq(this.intOthersDrawn);
+        deltaKingFreq = currKingFreq - this.kingFreq;
+        deltaQueenFreq = currQueenFreq - this.queenFreq;
+        deltaOtherFreq = currOtherFreq - this.otherFreq;
+        if(Math.abs(deltaKingFreq) > deltaF || Math.abs(deltaQueenFreq) > deltaF || Math.abs(deltaOtherFreq) > deltaF){
+            //We need to select a card based on frequency.
+            //Find the type of card with the greatest delta frequency
+            List<Double> deltaFs = new ArrayList();
+            deltaFs.add(deltaKingFreq);
+            deltaFs.add(deltaQueenFreq);
+            deltaFs.add(deltaOtherFreq);
+            Collections.sort(deltaFs);
+            CardChoice reqCardType;
+            if(deltaFs.get(deltaFs.size()-1).equals(deltaKingFreq)){
+                reqCardType = CardChoice.KING;
+            } else if(deltaFs.get(deltaFs.size()-1).equals(deltaQueenFreq)){
+                reqCardType = CardChoice.QUEEN;
+            } else {
+                reqCardType = CardChoice.OTHER;
+            }
+            switch(reqCardType){
+                case KING:
+                    result = this.createSpecialCard();
+                    if(result.getValue() != CardValue.KING){
+                        result = new Card(result.getSuite(), CardValue.KING, true);
+                    }
+                    break;
+                case QUEEN:
+                    result = this.createSpecialCard();
+                    if(result.getValue() != CardValue.QUEEN){
+                        result = new Card(result.getSuite(), CardValue.QUEEN, true);
+                    }
+                    break;
+                default:
+                    result = this.createNormalCard();
+            }
         } else {
-            result = this.createNormalCard();
-        }
-        if (this.checkIfKingOrQueenCard(result)) {
-            this.resetTimeSinceLastSpecialCard();
-        } else {
-            this.intDrawsSinceLastSpecialCard++;
+            //We need to select a card randomly
+            result = drawRandomCard();
         }
         incCounters(result);
         return result;
@@ -82,12 +123,34 @@ public class FrequencyInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
 
     @Override
     protected ICard createSpecialCard() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ICard result;
+        CardValue cardValue;
+        CardSuite suiteValue;
+        Double randValue = Math.random();
+        int intValue = Math.round(randValue.floatValue());
+        if(intValue == 0){
+            cardValue = CardValue.QUEEN;
+        } else {
+            cardValue = CardValue.KING;
+        }
+        randValue = Math.random() * 4;
+        intValue = Math.round(randValue.floatValue());
+        suiteValue = CardSuite.getSuiteFromInt(intValue);
+        result = new Card(suiteValue, cardValue, true);
+        return result;
     }
 
     @Override
     protected ICard createNormalCard() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ICard result;
+        Double randValue = Math.random() * 11;
+        int intValue = Math.round(randValue.floatValue());
+        CardValue cardValue = CardValue.getCardValueFromInt(intValue);
+        randValue = Math.random() * 4;
+        intValue = Math.round(randValue.floatValue());
+        CardSuite suiteValue = CardSuite.getSuiteFromInt(intValue);
+        result = new Card(suiteValue, cardValue, true);
+        return result;
     }
 
     @Override
@@ -122,6 +185,61 @@ public class FrequencyInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
             result = value / dblTotal;
         }
         return result;
+    }
+
+    private ICard drawRandomCard() {
+        ICard result;
+        //Normalise frequency values
+        double nmlKingFreq, nmlQueenFreq, nmlOtherFreq, totalFreq;
+        totalFreq = this.kingFreq + this.queenFreq + this.otherFreq;
+        nmlKingFreq = this.kingFreq / totalFreq;
+        nmlQueenFreq = this.queenFreq / totalFreq;
+        nmlOtherFreq = this.otherFreq / totalFreq;
+        double rand = Math.random();
+        if(rand <= nmlKingFreq) {
+            result = createSpecialCard();
+            if(result.getValue() != CardValue.KING){
+                result = new Card(result.getSuite(), CardValue.KING, true);
+            }
+        }else if(rand <= (nmlKingFreq + nmlQueenFreq)){
+            result = createSpecialCard();
+            if(result.getValue() != CardValue.QUEEN){
+                result = new Card(result.getSuite(), CardValue.QUEEN, true);
+            }
+        } else {
+            result = createNormalCard();
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isAlgorithmic() {
+        return true;
+    }
+
+    @Override
+    public Class<?> getFactoryClass() {
+        return DeckAlgorithmFactory.class;
+    }
+
+    @Override
+    public String getFactoryMethodName() {
+        return "createFrequencyInfiniteDeckAlgorithm";
+    }
+
+    @Override
+    public Object[] getFactoryArgs() {
+        //double fKing, double fQueen, double fOther, double deltaf
+        Object[] result = new Object[4];
+        result[0] = this.kingFreq;
+        result[0] = this.queenFreq;
+        result[0] = this.otherFreq;
+        result[0] = this.deltaF;
+        return result;
+    }
+    
+    private enum CardChoice {
+        KING, QUEEN, OTHER;
     }
 
 }

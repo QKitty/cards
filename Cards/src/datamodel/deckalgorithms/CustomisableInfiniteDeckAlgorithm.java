@@ -11,6 +11,7 @@ import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
 import datamodel.interfaces.ICard;
+import datamodel.persistance.DeckAlgorithmFactory;
 import java.util.Random;
 
 /**
@@ -130,6 +131,32 @@ public class CustomisableInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
     @Override
     public void reset() {
         //No reset action needed
+    }
+
+    @Override
+    public boolean isAlgorithmic() {
+        return true;
+    }
+
+    @Override
+    public Class<?> getFactoryClass() {
+        return DeckAlgorithmFactory.class;
+    }
+
+    @Override
+    public String getFactoryMethodName() {
+        return "createCustomisableInfiniteDeckAlgorithm";
+    }
+
+    @Override
+    public Object[] getFactoryArgs() {
+        Object[] result = new Object[4];
+        //double prefKing, double prefQueen, int noKQCards, int maxDrawsBetween
+        result[0] = this.prefForKing;
+        result[1] = this.prefForQueen;
+        result[2] = this.noOfKingQueenCards;
+        result[3] = this.intMaxCardDrawsBetweenSpecialCard;
+        return result;
     }
 
 }

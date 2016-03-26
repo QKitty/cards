@@ -135,4 +135,59 @@ public enum CardValue {
         return result;
     }
 
+    @Override
+    public String toString() {
+        String result;
+        switch (this) {
+            case ACE:
+                result = "Ace";
+                break;
+            case TWO:
+                result = "Two";
+                break;
+            case THREE:
+                result = "Three";
+                break;
+            case FOUR:
+                result = "Four";
+                break;
+            case FIVE:
+                result = "Five";
+                break;
+            case SIX:
+                result = "Six";
+                break;
+            case SEVEN:
+                result = "Seven";
+                break;
+            case EIGHT:
+                result = "Eight";
+                break;
+            case NINE:
+                result = "Nine";
+                break;
+            case TEN:
+                result = "Ten";
+                break;
+            case JACK:
+                result = "Jack";
+                break;
+            case QUEEN:
+                result = "Queen";
+                break;
+            case KING:
+                result = "King";
+                break;
+            case JOKER_RED:
+                result = "Red Joker";
+                break;
+            case JOKER_BLACK:
+                result = "Black Joker";
+                break;
+            default:
+                result = "";
+        }
+        return result;
+    }
+
 }

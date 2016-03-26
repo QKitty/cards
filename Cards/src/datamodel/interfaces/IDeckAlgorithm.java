@@ -7,13 +7,14 @@ package datamodel.interfaces;
 
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.DeckType;
+import java.io.Serializable;
 
 /**
  * Classes that provide an algorithm for generating or removing a card from a
  * deck should implement this interface
  * @author rtucker
  */
-public interface IDeckAlgorithm {
+public interface IDeckAlgorithm extends Serializable, IXMLPersistable {
     
     /**
      * Accessor to retrieve the number of cards drawn from the deck since the
@@ -94,5 +95,12 @@ public interface IDeckAlgorithm {
      * and the deck can be re-used.
      */
     void reset();
+    
+    /**
+     * Accessor to test if this deck uses an algorithm to generate its cards
+     * @return boolean True if this deck accepts IDeckAlgorithm objects as a
+     * means of generating cards. False otherwise.
+     */
+    boolean isAlgorithmic();
     
 }

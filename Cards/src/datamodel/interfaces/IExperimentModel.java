@@ -14,7 +14,7 @@ import java.util.List;
  * when running a trial
  * @author rtucker
  */
-public interface IExperimentModel extends Iterable<IDeck>, IObserver<Object>, ISubject {
+public interface IExperimentModel extends Iterable<IDeck>, IObserver<Object>, ISubject, IXMLPersistable {
     
     /**
      * Accessor to test if experiment has been marked as complete

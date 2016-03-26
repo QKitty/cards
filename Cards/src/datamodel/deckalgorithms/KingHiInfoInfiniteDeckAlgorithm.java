@@ -11,6 +11,7 @@ import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
 import datamodel.interfaces.ICard;
+import datamodel.persistance.DeckAlgorithmFactory;
 import java.util.Random;
 
 /**
@@ -106,6 +107,26 @@ public class KingHiInfoInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
     @Override
     public void reset() {
         //No reset action needed.
+    }
+
+    @Override
+    public boolean isAlgorithmic() {
+        return true;
+    }
+
+    @Override
+    public Class<?> getFactoryClass() {
+        return DeckAlgorithmFactory.class;
+    }
+
+    @Override
+    public String getFactoryMethodName() {
+        return "createKingHiInfoInfiniteDeckAlgorithm";
+    }
+
+    @Override
+    public Object[] getFactoryArgs() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
