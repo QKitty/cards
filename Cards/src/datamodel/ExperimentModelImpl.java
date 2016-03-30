@@ -8,8 +8,11 @@ package datamodel;
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import com.gmail.qkitty6.patterns.observer.ISubject;
 import com.gmail.qkitty6.patterns.observer.ISubjectSetImpl;
+import datamodel.interfaces.IController;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IExperimentModel;
+import datamodel.interfaces.IPerson;
+import datamodel.people.Participant;
 import datamodel.persistance.ExperimentFactory;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,18 +26,36 @@ public class ExperimentModelImpl implements IExperimentModel {
     private final List<IDeck> myDecks;
     private boolean experimentComplete;
     private final ISubject observers;
+    private IPerson participant;
+    private IController controller;
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Constructors">
     public ExperimentModelImpl() {
         myDecks = new ArrayList<>();
         this.experimentComplete = false;
+        this.participant = new Participant();
+        this.observers = new ISubjectSetImpl();
+    }
+    
+    public ExperimentModelImpl(IPerson aParticipant) {
+        myDecks = new ArrayList<>();
+        this.experimentComplete = false;
+        this.participant = aParticipant;
         this.observers = new ISubjectSetImpl();
     }
     
     public ExperimentModelImpl(List<IDeck> decks) {
         myDecks = new ArrayList<>(decks);
         this.experimentComplete = false;
+        this.participant = new Participant();
+        this.observers = new ISubjectSetImpl();
+    }
+    
+    public ExperimentModelImpl(IPerson aParticipant, List<IDeck> decks) {
+        myDecks = new ArrayList<>(decks);
+        this.experimentComplete = false;
+        this.participant = aParticipant;
         this.observers = new ISubjectSetImpl();
     }
 //</editor-fold>
@@ -102,6 +123,9 @@ public class ExperimentModelImpl implements IExperimentModel {
         IDeck result = null;
         if (index >= 0 && index < this.myDecks.size()) {
             result = this.myDecks.remove(index);
+            if(null != result){
+                this.notifyObservers();
+            }
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -127,6 +151,7 @@ public class ExperimentModelImpl implements IExperimentModel {
     @Override
     public void clear() {
         this.myDecks.clear();
+        this.notifyObservers();
     }
     
     @Override
@@ -137,6 +162,41 @@ public class ExperimentModelImpl implements IExperimentModel {
     @Override
     public int getNoOfDecks() {
         return this.myDecks.size();
+    }
+    
+    @Override
+    public IPerson getParticipant() {
+        return this.participant;
+    }
+
+    @Override
+    public boolean setParticipant(IPerson newParticipant) {
+        boolean result = false;
+        if(null != newParticipant){
+            if(null != this.participant){
+                this.participant.removeObserver(this);
+            }
+            this.participant = newParticipant;
+            this.participant.registerObserver(this);
+            result = true;
+            this.notifyObservers();
+        }
+        return result;
+    }
+    
+    @Override
+    public IController getController() {
+        return this.controller;
+    }
+
+    @Override
+    public boolean setController(IController aController) {
+        boolean result = false;
+        if(null != aController){
+            this.controller = aController;
+            result = true;
+        }
+        return result;
     }
 //</editor-fold>
 

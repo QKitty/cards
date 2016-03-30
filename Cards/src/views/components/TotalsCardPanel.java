@@ -270,4 +270,21 @@ public class TotalsCardPanel extends javax.swing.JPanel implements IDeck, IObser
     }
 //</editor-fold>
 
+//<editor-fold defaultstate="collapsed" desc="IXMLPersistable is not supported by GUI components">
+    @Override
+    public Class<?> getFactoryClass() {
+        throw new UnsupportedOperationException("Not supported by GUI components."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public String getFactoryMethodName() {
+        throw new UnsupportedOperationException("Not supported GUI components."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Object[] getFactoryArgs() {
+        throw new UnsupportedOperationException("Not supported GUI components."); //To change body of generated methods, choose Tools | Templates.
+    }
+//</editor-fold>
+
 }

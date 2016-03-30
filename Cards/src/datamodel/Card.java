@@ -5,6 +5,9 @@
  */
 package datamodel;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
+import com.gmail.qkitty6.patterns.observer.ISubject;
+import com.gmail.qkitty6.patterns.observer.ISubjectImpl;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.SuiteColour;
@@ -14,6 +17,8 @@ import datamodel.interfaces.SVGIconGenerator;
 import datamodel.persistance.CardFactory;
 import java.beans.XMLEncoder;
 import java.io.File;
+import java.util.Collection;
+import java.util.Set;
 import javax.swing.Icon;
 
 /**
@@ -28,6 +33,7 @@ public class Card implements ICard {
     private final CardSuite suite;
     private final CardValue value;
     private final ICardIconGenerator iconCreator;
+    private final ISubject observers;
     private boolean showingFace;
     private boolean selected;
     // </editor-fold>
@@ -39,6 +45,7 @@ public class Card implements ICard {
         this.iconCreator = new SVGIconGenerator();
         this.showingFace = false;
         this.selected = false;
+        this.observers = new ISubjectImpl();
     }
 
     public Card(CardSuite newSuite, CardValue newValue, boolean showFace) {
@@ -141,6 +148,43 @@ public class Card implements ICard {
     @Override
     public XMLEncoder createXMLEncoder(File aFile) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Observer Pattern Implementation">
+    @Override
+    public boolean registerObserver(IObserver o) {
+        return observers.registerObserver(o);
+    }
+    
+    @Override
+    public boolean removeObserver(IObserver o) {
+        return observers.removeObserver(o);
+    }
+    
+    @Override
+    public void notifyObservers() {
+        observers.notifyObservers();
+    }
+    
+    @Override
+    public <T> void notifyObservers(T data) {
+        observers.notifyObservers(data);
+    }
+    
+    @Override
+    public Set<IObserver> removeAllObservers() {
+        return observers.removeAllObservers();
+    }
+    
+    @Override
+    public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
+        return observers.registerObserver(observerCollection);
+    }
+    
+    @Override
+    public void update() {
+        this.notifyObservers();
     }
     //</editor-fold>
 }

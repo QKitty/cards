@@ -5,6 +5,8 @@
  */
 package datamodel.interfaces;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
+import com.gmail.qkitty6.patterns.observer.ISubject;
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.DeckType;
 import java.io.Serializable;
@@ -14,7 +16,7 @@ import java.io.Serializable;
  * deck should implement this interface
  * @author rtucker
  */
-public interface IDeckAlgorithm extends Serializable, IXMLPersistable {
+public interface IDeckAlgorithm extends Serializable, IXMLPersistable, ISubject, IObserver<Void> {
     
     /**
      * Accessor to retrieve the number of cards drawn from the deck since the

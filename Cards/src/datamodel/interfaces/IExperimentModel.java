@@ -14,7 +14,7 @@ import java.util.List;
  * when running a trial
  * @author rtucker
  */
-public interface IExperimentModel extends Iterable<IDeck>, IObserver<Object>, ISubject, IXMLPersistable {
+public interface IExperimentModel extends Iterable<IDeck>, IObserver<Object>, ISubject, IXMLPersistable, IControllable {
     
     /**
      * Accessor to test if experiment has been marked as complete
@@ -92,4 +92,17 @@ public interface IExperimentModel extends Iterable<IDeck>, IObserver<Object>, IS
      * @return - int being the number of IDeck objects in this experiment.
      */
     int getNoOfDecks();
+    
+    /**
+     * Accessor to retrieve the participant in the experiment
+     * @return - An IPerson object representing the participant in the experiment
+     */
+    IPerson getParticipant();
+    
+    /**
+     * Accessor to set the details of the person participating in the experiment
+     * @param newParticipant - An IPerson object representing the experiments participant
+     * @return - Boolean true if the details where accepted and stored, False otherwise.
+     */
+    boolean setParticipant(IPerson newParticipant);
 }

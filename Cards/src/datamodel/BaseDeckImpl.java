@@ -17,7 +17,6 @@ import datamodel.interfaces.IDeckAlgorithm;
 import datamodel.interfaces.IXMLPersistable;
 import datamodel.persistance.DeckFactory;
 import datamodel.persistance.IXMLPersistablePersistanceDelegate;
-import java.beans.PersistenceDelegate;
 import java.beans.XMLEncoder;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -25,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -71,12 +69,15 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     @Override
     public void setMaxCardDrawsBetweenSpecialCards(int max) throws IllegalArgumentException {
         this.cardAlgorithm.setMaxCardDrawsBetweenSpecialCards(max);
+        this.notifyObservers();
     }
 
     @Override
     public ICard drawCard() {
         ICard drawnCard = this.cardAlgorithm.drawCard();
         drawnCards.add(drawnCard);
+        drawnCard.registerObserver(this);
+        this.notifyObservers();
         return drawnCard;
     }
 
@@ -108,13 +109,17 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     @Override
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
         this.cardAlgorithm.setProbabilityOfSpecialCard(probability);
+        this.notifyObservers();
     }
 
     @Override
     public void reset() {
         this.cardAlgorithm.reset();
+        for(ICard currCard : this.drawnCards){
+            currCard.removeObserver(this);
+        }
         this.drawnCards.clear();
-        this.observers.notifyObservers();
+        this.notifyObservers();
     }
 
     @Override
@@ -141,6 +146,7 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
         if (null != alg) {
             this.cardAlgorithm = alg;
             result = true;
+            this.notifyObservers();
         }
         return result;
     }
@@ -180,6 +186,11 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     @Override
     public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
         return observers.registerObserver(observerCollection);
+    }
+
+    @Override
+    public void update() {
+        this.notifyObservers();
     }
     //</editor-fold>
 

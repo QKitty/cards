@@ -5,10 +5,15 @@
  */
 package datamodel.deckalgorithms;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
+import com.gmail.qkitty6.patterns.observer.ISubject;
+import com.gmail.qkitty6.patterns.observer.ISubjectImpl;
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.DeckType;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeckAlgorithm;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Abstract base class from which deck algorithms should inherit. Provides
@@ -21,15 +26,18 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
     protected int intDrawsSinceLastSpecialCard;
     protected int intMaxCardDrawsBetweenSpecialCard;
     protected double dblProbOfSpecialCard;
+    protected final ISubject observers;
 
     public BaseDeckAlgorithm() {
         this.intDrawsSinceLastSpecialCard = 0;
         this.intMaxCardDrawsBetweenSpecialCard = 5;
+        this.observers = new ISubjectImpl();
     }
 
     public BaseDeckAlgorithm(int maxCardsBetweenSpecialCard) {
         this.intDrawsSinceLastSpecialCard = 0;
         this.intMaxCardDrawsBetweenSpecialCard = maxCardsBetweenSpecialCard;
+        this.observers = new ISubjectImpl();
     }
 
     @Override
@@ -48,6 +56,7 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
             throw new IllegalArgumentException("Maximum number of cards drawn between special cards must be positive");
         }
         this.intMaxCardDrawsBetweenSpecialCard = max;
+        this.notifyObservers();
     }
 
     @Override
@@ -76,6 +85,7 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
             throw new IllegalArgumentException("Probability of drawing a special card must be between 0 and 1");
         }
         this.dblProbOfSpecialCard = probability;
+        this.notifyObservers();
     }
 
     protected boolean checkIfKingOrQueenCard(ICard aCard) {
@@ -96,6 +106,7 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
 
     protected void resetTimeSinceLastSpecialCard() {
         this.intDrawsSinceLastSpecialCard = 0;
+        this.notifyObservers();
     }
 
     protected abstract ICard createSpecialCard();
@@ -116,4 +127,40 @@ public abstract class BaseDeckAlgorithm implements IDeckAlgorithm {
     public abstract Object[] getFactoryArgs();
 //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Observer Pattern Implementation">
+    @Override
+    public boolean registerObserver(IObserver o) {
+        return observers.registerObserver(o);
+    }
+    
+    @Override
+    public boolean removeObserver(IObserver o) {
+        return observers.removeObserver(o);
+    }
+    
+    @Override
+    public void notifyObservers() {
+        observers.notifyObservers();
+    }
+    
+    @Override
+    public <T> void notifyObservers(T data) {
+        observers.notifyObservers(data);
+    }
+    
+    @Override
+    public Set<IObserver> removeAllObservers() {
+        return observers.removeAllObservers();
+    }
+    
+    @Override
+    public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
+        return observers.registerObserver(observerCollection);
+    }
+    
+    @Override
+    public void update() {
+        this.notifyObservers();
+    }
+    //</editor-fold>
 }

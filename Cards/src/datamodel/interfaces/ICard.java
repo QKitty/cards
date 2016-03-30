@@ -5,6 +5,8 @@
  */
 package datamodel.interfaces;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
+import com.gmail.qkitty6.patterns.observer.ISubject;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.SuiteColour;
@@ -15,7 +17,7 @@ import javax.swing.Icon;
  * This interface represents the abstract concept of a playing card
  * @author rtucker
  */
-public interface ICard extends Serializable, IXMLPersistable {
+public interface ICard extends Serializable, IXMLPersistable, ISubject, IObserver<Void> {
     
     /**
      * Tests to determine if this is a 'face' card. Face cards are:

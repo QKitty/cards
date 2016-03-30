@@ -5,7 +5,6 @@
  */
 package datamodel.interfaces;
 
-import com.gmail.qkitty6.patterns.observer.ISubject;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * This interface represents the abstract concept of a pack of playing cards
  * @author rtucker
  */
-public interface IDeck extends Serializable, IDeckAlgorithm, ISubject {
+public interface IDeck extends Serializable, IDeckAlgorithm {
     
     /**
      * Retrieves the current algorithm in use by the deck to create its cards

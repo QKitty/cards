@@ -5,6 +5,9 @@
  */
 package views;
 
+import controlers.PrimaryController;
+import datamodel.interfaces.IControllable;
+import datamodel.interfaces.IController;
 import datamodel.interfaces.IExperimentModel;
 import javax.swing.JDialog;
 
@@ -12,9 +15,10 @@ import javax.swing.JDialog;
  *
  * @author rtucker
  */
-public class CardsMainForm extends javax.swing.JFrame {
+public class CardsMainForm extends javax.swing.JFrame implements IControllable {
     
     private IExperimentModel myExperiment;
+    private IController controller;
 
     /**
      * Creates new form CardsMainForm
@@ -22,6 +26,7 @@ public class CardsMainForm extends javax.swing.JFrame {
     public CardsMainForm() {
         initComponents();
         ViewUtils.centreFrame(this);
+        initialise();
     }
 
     /**
@@ -39,6 +44,7 @@ public class CardsMainForm extends javax.swing.JFrame {
         mnuItemSaveTrialData = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         mnuTrialSettings = new javax.swing.JMenuItem();
+        mnuParticipant = new javax.swing.JMenuItem();
         mnuBeginTrial = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -72,6 +78,17 @@ public class CardsMainForm extends javax.swing.JFrame {
             }
         });
         jMenu2.add(mnuTrialSettings);
+
+        mnuParticipant.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+        mnuParticipant.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Person.png"))); // NOI18N
+        mnuParticipant.setText("Edit participant details");
+        mnuParticipant.setToolTipText("Enter or change participant information");
+        mnuParticipant.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuParticipantActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mnuParticipant);
 
         mnuBeginTrial.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         mnuBeginTrial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/playing-card--plus.png"))); // NOI18N
@@ -111,6 +128,12 @@ public class CardsMainForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         showTrialSettings();
     }//GEN-LAST:event_mnuTrialSettingsActionPerformed
+
+    private void mnuParticipantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuParticipantActionPerformed
+        ParticipantEntryWindow window = new ParticipantEntryWindow();
+        window.setController(controller);
+        window.setVisible(true);
+    }//GEN-LAST:event_mnuParticipantActionPerformed
 
     /**
      * @param args the command line arguments
@@ -153,6 +176,7 @@ public class CardsMainForm extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem mnuBeginTrial;
     private javax.swing.JMenuItem mnuItemSaveTrialData;
+    private javax.swing.JMenuItem mnuParticipant;
     private javax.swing.JMenuItem mnuTrialSettings;
     private javax.swing.JScrollPane scrMainViewPane;
     // End of variables declaration//GEN-END:variables
@@ -162,5 +186,25 @@ public class CardsMainForm extends javax.swing.JFrame {
         settingsWin.setModal(true);
         ViewUtils.centreDialog(settingsWin);
         settingsWin.setVisible(true);
+    }
+
+//<editor-fold defaultstate="collapsed" desc="IControllable implementation">
+    @Override
+    public IController getController() {
+        return this.controller;
+    }
+    
+    @Override
+    public boolean setController(IController aController) {
+        boolean result = false;
+        if(null != aController){
+            this.controller = aController;
+        }
+        return result;
+    }
+//</editor-fold>
+
+    private void initialise() {
+        this.controller = new PrimaryController();
     }
 }
