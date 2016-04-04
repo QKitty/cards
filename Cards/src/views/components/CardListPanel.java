@@ -58,20 +58,6 @@ public class CardListPanel extends javax.swing.JPanel implements Iterable<ICard>
         this.addMouseWheelListener(mouseActions);
     }
 
-    @Override
-    public void setPreferredSize(Dimension dmnsn) {
-        super.setPreferredSize(dmnsn); //To change body of generated methods, choose Tools | Templates.
-        System.out.println("Setting prefered size of: " + dmnsn.toString());
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        System.out.println("Getting prefered size of: " + super.getPreferredSize().toString());
-        return super.getPreferredSize(); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

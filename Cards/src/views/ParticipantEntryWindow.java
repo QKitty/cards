@@ -7,10 +7,13 @@ package views;
 
 import datamodel.interfaces.IPerson;
 import datamodel.people.Participant;
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import javafx.scene.input.KeyCode;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -277,9 +280,15 @@ public class ParticipantEntryWindow extends BaseCardWindow {
         public void keyReleased(KeyEvent e) {
             int keyCode = e.getKeyCode();
             switch (keyCode) {
-                case KeyEvent.VK_ENTER:
-                    dispatchEvent(new KeyEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiers(), KeyEvent.VK_TAB, e.getKeyChar()));
-                    break;
+                case KeyEvent.VK_ENTER: {
+                    try {
+                        Robot robot = new Robot();
+                        robot.keyPress(KeyEvent.VK_TAB);
+                    } catch (AWTException ex) {
+                        Logger.getLogger(ParticipantEntryWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                break;
                 default:
             }
         }

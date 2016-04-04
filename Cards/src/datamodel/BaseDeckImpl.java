@@ -10,6 +10,7 @@ import com.gmail.qkitty6.patterns.observer.ISubject;
 import com.gmail.qkitty6.patterns.observer.ISubjectImpl;
 import datamodel.deckalgorithms.BaseDeckAlgorithm;
 import datamodel.enums.CardAlgorithmCategory;
+import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
@@ -38,15 +39,21 @@ import java.util.logging.Logger;
 public class BaseDeckImpl implements IDeck, IXMLPersistable {
 
     // <editor-fold defaultstate="collapsed" desc="Class Attributes">
+    protected String id;
+    private DeckStatistics stats;
     protected IDeckAlgorithm cardAlgorithm;
     protected List<ICard> drawnCards;
+    protected CardAlgorithmCategory currGuess;
     protected ISubject observers;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     public BaseDeckImpl() {
         this.drawnCards = new ArrayList<>();
+        this.currGuess = CardAlgorithmCategory.UNKNOWN;
         observers = new ISubjectImpl();
+        this.stats = new DeckStatistics();
+        this.id = "UNKNOWN";
     }
 
     public BaseDeckImpl(IDeckAlgorithm algorithm) {
@@ -77,6 +84,7 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
         ICard drawnCard = this.cardAlgorithm.drawCard();
         drawnCards.add(drawnCard);
         drawnCard.registerObserver(this);
+        this.stats.refresh();
         this.notifyObservers();
         return drawnCard;
     }
@@ -115,9 +123,9 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     @Override
     public void reset() {
         this.cardAlgorithm.reset();
-        for(ICard currCard : this.drawnCards){
+        this.drawnCards.stream().forEach((currCard) -> {
             currCard.removeObserver(this);
-        }
+        });
         this.drawnCards.clear();
         this.notifyObservers();
     }
@@ -135,9 +143,7 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     // <editor-fold defaultstate="collapsed" desc="IDeck interface implementation">
     @Override
     public final IDeckAlgorithm getDeckAlgorithm() {
-        IDeckAlgorithm result = null;
-        result = this.cardAlgorithm;
-        return result;
+        return this.cardAlgorithm;
     }
 
     @Override
@@ -154,6 +160,94 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     @Override
     public List<ICard> getDrawnCardList() {
         return new ArrayList<>(drawnCards);
+    }
+    
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(String newId) {
+        if(null != newId){
+            if(!newId.isEmpty()){
+                this.id = newId;
+            }else{
+                this.id = "UNKNOWN";
+            }
+            this.notifyObservers();
+        } else {
+            throw new NullPointerException("Cannot set a NULL value as a deck Id.");
+        }
+    }
+
+    @Override
+    public int getNoOfKingsDrawn() {
+        int result = 0;
+        if(!drawnCards.isEmpty()){
+            result = stats.kingCount;
+        }
+        return result;
+    }
+
+    @Override
+    public int getNoOfQueensDrawn() {
+        int result = 0;
+        if(!drawnCards.isEmpty()){
+            result = stats.queenCount;
+        }
+        return result;
+    }
+
+    @Override
+    public int getNoOfOtherCardsDrawn() {
+        int result = 0;
+        if(!drawnCards.isEmpty()){
+            result = stats.otherCount;
+        }
+        return result;
+    }
+
+    @Override
+    public double getProportionOfKingsVKingsAndQueensDrawn() {
+        double result = 0.0;
+        if(!drawnCards.isEmpty()){
+            result = stats.kingCount / (double)(stats.kingCount + stats.queenCount);
+        }
+        return result;
+    }
+
+    @Override
+    public double getProportionOfKingsAndQueensDrawn() {
+        double result = 0.0;
+        if(!drawnCards.isEmpty()){
+            result = (stats.kingCount + stats.queenCount) / (double)(stats.kingCount + stats.queenCount + stats.otherCount);
+        }
+        return result;
+    }
+    
+    @Override
+    public CardAlgorithmCategory getParticipantsGuess() {
+        return this.currGuess;
+    }
+
+    @Override
+    public void setParticipantsGuess(CardAlgorithmCategory aGuess) {
+        if(null != aGuess){
+            this.currGuess = aGuess;
+            this.notifyObservers();
+        } else {
+            throw new NullPointerException("Cannot set a deck type guess of NULL.");
+        }
+    }
+
+    @Override
+    public boolean isParticipantGuessCorrect() {
+        boolean result = false;
+        if(this.currGuess.equals(this.cardAlgorithm.getAlgorithmCategory())){
+            result = true;
+        }
+        return result;
     }
     // </editor-fold>
 
@@ -226,4 +320,34 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
         return enc;
     }
     //</editor-fold>
+
+    
+
+//<editor-fold defaultstate="collapsed" desc="Inner Classes - Yuck">
+    private class DeckStatistics {
+        
+        public int kingCount;
+        public int queenCount;
+        public int otherCount;
+        
+        public DeckStatistics(){
+            this.refresh();
+        }
+        
+        public final void refresh(){
+            kingCount = 0;
+            queenCount = 0;
+            otherCount = 0;
+            drawnCards.stream().forEach((currCard) -> {
+                if(currCard.getValue() == CardValue.KING){
+                    kingCount++;
+                } else if(currCard.getValue() == CardValue.QUEEN){
+                    queenCount++;
+                } else {
+                    otherCount++;
+                }
+            });
+        }
+    }
+//</editor-fold>
 }

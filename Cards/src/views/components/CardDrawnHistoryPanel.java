@@ -202,6 +202,56 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
     public void reset(){
         this.myCardDeck.reset();
     }
+    
+    @Override
+    public String getId() {
+        return this.myCardDeck.getId();
+    }
+
+    @Override
+    public void setId(String newId) {
+        this.myCardDeck.setId(newId);
+    }
+
+    @Override
+    public int getNoOfKingsDrawn() {
+        return this.myCardDeck.getNoOfKingsDrawn();
+    }
+
+    @Override
+    public int getNoOfQueensDrawn() {
+        return this.myCardDeck.getNoOfQueensDrawn();
+    }
+
+    @Override
+    public int getNoOfOtherCardsDrawn() {
+        return this.myCardDeck.getNoOfOtherCardsDrawn();
+    }
+
+    @Override
+    public double getProportionOfKingsVKingsAndQueensDrawn() {
+        return this.myCardDeck.getProportionOfKingsVKingsAndQueensDrawn();
+    }
+
+    @Override
+    public double getProportionOfKingsAndQueensDrawn() {
+        return this.myCardDeck.getProportionOfKingsAndQueensDrawn();
+    }
+    
+    @Override
+    public CardAlgorithmCategory getParticipantsGuess() {
+        return this.myCardDeck.getParticipantsGuess();
+    }
+
+    @Override
+    public void setParticipantsGuess(CardAlgorithmCategory aGuess) {
+        this.myCardDeck.setParticipantsGuess(aGuess);
+    }
+
+    @Override
+    public boolean isParticipantGuessCorrect() {
+        return this.myCardDeck.isParticipantGuessCorrect();
+    }
 //</editor-fold>
 
     private void startCardAnimation() {
@@ -289,8 +339,5 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
         throw new UnsupportedOperationException("Not supported GUI components."); //To change body of generated methods, choose Tools | Templates.
     }
 //</editor-fold>
-
-    
-    
-    
+ 
 }

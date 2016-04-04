@@ -6,19 +6,17 @@
 package views;
 
 import controlers.PrimaryController;
-import datamodel.interfaces.IControllable;
-import datamodel.interfaces.IController;
 import datamodel.interfaces.IExperimentModel;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 
 /**
- *
+ * The applications main form
  * @author rtucker
  */
-public class CardsMainForm extends javax.swing.JFrame implements IControllable {
+public class CardsMainForm extends BaseCardWindow {
     
     private IExperimentModel myExperiment;
-    private IController controller;
 
     /**
      * Creates new form CardsMainForm
@@ -39,19 +37,20 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
     private void initComponents() {
 
         scrMainViewPane = new javax.swing.JScrollPane();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        mnuBar = new javax.swing.JMenuBar();
+        mnuFile = new javax.swing.JMenu();
         mnuItemSaveTrialData = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        mnuEdit = new javax.swing.JMenu();
         mnuTrialSettings = new javax.swing.JMenuItem();
         mnuParticipant = new javax.swing.JMenuItem();
         mnuBeginTrial = new javax.swing.JMenuItem();
+        mnuCompleteExperiment = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         scrMainViewPane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jMenu1.setText("File");
+        mnuFile.setText("File");
 
         mnuItemSaveTrialData.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         mnuItemSaveTrialData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/disk-return-black.png"))); // NOI18N
@@ -62,11 +61,11 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
                 mnuItemSaveTrialDataActionPerformed(evt);
             }
         });
-        jMenu1.add(mnuItemSaveTrialData);
+        mnuFile.add(mnuItemSaveTrialData);
 
-        jMenuBar1.add(jMenu1);
+        mnuBar.add(mnuFile);
 
-        jMenu2.setText("Edit");
+        mnuEdit.setText("Edit");
 
         mnuTrialSettings.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
         mnuTrialSettings.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/gear--pencil.png"))); // NOI18N
@@ -77,7 +76,7 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
                 mnuTrialSettingsActionPerformed(evt);
             }
         });
-        jMenu2.add(mnuTrialSettings);
+        mnuEdit.add(mnuTrialSettings);
 
         mnuParticipant.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         mnuParticipant.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Person.png"))); // NOI18N
@@ -88,17 +87,28 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
                 mnuParticipantActionPerformed(evt);
             }
         });
-        jMenu2.add(mnuParticipant);
+        mnuEdit.add(mnuParticipant);
 
         mnuBeginTrial.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         mnuBeginTrial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/playing-card--plus.png"))); // NOI18N
         mnuBeginTrial.setText("Start Experiment");
         mnuBeginTrial.setToolTipText("Begin a new trial");
-        jMenu2.add(mnuBeginTrial);
+        mnuBeginTrial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuBeginTrialActionPerformed(evt);
+            }
+        });
+        mnuEdit.add(mnuBeginTrial);
 
-        jMenuBar1.add(jMenu2);
+        mnuCompleteExperiment.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_MASK));
+        mnuCompleteExperiment.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tick-circle-frame.png"))); // NOI18N
+        mnuCompleteExperiment.setText("Complete Experiment");
+        mnuCompleteExperiment.setToolTipText("Confirm your choices and save results");
+        mnuEdit.add(mnuCompleteExperiment);
 
-        setJMenuBar(jMenuBar1);
+        mnuBar.add(mnuEdit);
+
+        setJMenuBar(mnuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -125,7 +135,6 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
     }//GEN-LAST:event_mnuItemSaveTrialDataActionPerformed
 
     private void mnuTrialSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTrialSettingsActionPerformed
-        // TODO add your handling code here:
         showTrialSettings();
     }//GEN-LAST:event_mnuTrialSettingsActionPerformed
 
@@ -134,6 +143,10 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
         window.setController(controller);
         window.setVisible(true);
     }//GEN-LAST:event_mnuParticipantActionPerformed
+
+    private void mnuBeginTrialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuBeginTrialActionPerformed
+        this.controller.startExperiment();
+    }//GEN-LAST:event_mnuBeginTrialActionPerformed
 
     /**
      * @param args the command line arguments
@@ -163,24 +176,37 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CardsMainForm().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new CardsMainForm().setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem mnuBeginTrial;
+    private javax.swing.JMenuItem mnuCompleteExperiment;
+    private javax.swing.JMenu mnuEdit;
+    private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuItemSaveTrialData;
     private javax.swing.JMenuItem mnuParticipant;
     private javax.swing.JMenuItem mnuTrialSettings;
     private javax.swing.JScrollPane scrMainViewPane;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void update() {
+        configureMenus();
+    }
+    
+    public void setView(JPanel aPanel){
+        if(null != aPanel){
+            scrMainViewPane.setViewportView(aPanel);
+        }else{
+            JPanel blank = new JPanel();
+            scrMainViewPane.setViewportView(blank);
+        }
+    }
+    
     private void showTrialSettings() {
         JDialog settingsWin = new TrialSetupDialog(this, true);
         settingsWin.setModal(true);
@@ -188,23 +214,28 @@ public class CardsMainForm extends javax.swing.JFrame implements IControllable {
         settingsWin.setVisible(true);
     }
 
-//<editor-fold defaultstate="collapsed" desc="IControllable implementation">
-    @Override
-    public IController getController() {
-        return this.controller;
-    }
-    
-    @Override
-    public boolean setController(IController aController) {
-        boolean result = false;
-        if(null != aController){
-            this.controller = aController;
-        }
-        return result;
-    }
-//</editor-fold>
-
     private void initialise() {
-        this.controller = new PrimaryController();
+        this.controller = new PrimaryController(this);
+        this.myExperiment = this.controller.getExpModel();
+        this.myExperiment.registerObserver(this);
+        this.myExperiment.notifyObservers();
+    }
+
+    private void configureMenus() {
+        if(this.controller.isExperimentRunning()){
+            //Disable Participant entry, Equipment setup & Start Experiment
+            mnuBeginTrial.setEnabled(false);
+            mnuParticipant.setEnabled(false);
+            mnuTrialSettings.setEnabled(false);
+            //Enable complete experiment
+            mnuCompleteExperiment.setEnabled(true);
+        } else {
+            //Enable Participant entry, Experiment setup & Start Experiment
+            mnuBeginTrial.setEnabled(true);
+            mnuParticipant.setEnabled(true);
+            mnuTrialSettings.setEnabled(true);
+            //Disable complete experiment
+            mnuCompleteExperiment.setEnabled(false);
+        }
     }
 }

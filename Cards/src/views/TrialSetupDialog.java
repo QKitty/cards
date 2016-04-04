@@ -6,7 +6,6 @@
 package views;
 
 import java.awt.CardLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JPanel;

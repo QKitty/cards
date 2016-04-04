@@ -5,6 +5,7 @@
  */
 package datamodel.interfaces;
 
+import datamodel.enums.CardAlgorithmCategory;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,5 +36,70 @@ public interface IDeck extends Serializable, IDeckAlgorithm {
      * @return A list of drawn cards
      */
     List<ICard> getDrawnCardList();
+    
+    /**
+     * Accessor to retrieve the ID String for this deck
+     * @return A String holding the Id that identifies this deck.
+     */
+    String getId();
+    
+    /**
+     * Accessor to set the Id string for this deck
+     * @param newId - String being the new Id string for this deck.
+     */
+    void setId(String newId);
+    
+    /**
+     * Accessor to retrieve the number of King cards drawn
+     * @return - An integer being the number of king cards that where drawn
+     */
+    int getNoOfKingsDrawn();
+    
+    /**
+     * Accessor to retrieve the number of Queen cards drawn
+     * @return - An integer being the number of queen cards that where drawn
+     */
+    int getNoOfQueensDrawn();
+    
+    /**
+     * Accessor to retrieve the number of non King or Queen cards drawn
+     * @return - An integer being the number of non king or queen cards that where drawn
+     */
+    int getNoOfOtherCardsDrawn();
+    
+    /**
+     * Retrieves the proportion of Kings vs Queens drawn per the formula
+     * K / (K + Q) where K = no of Kings drawn and Q = no of Queens drawn
+     * @return double being the result of the formula K / (K + Q)
+     */
+    double getProportionOfKingsVKingsAndQueensDrawn();
+    
+    /**
+     * Retrieves the proportion of king + queen cards drawn as a fraction of all cards drawn
+     * per the formula (K + Q) / (K + Q + O) where K = no of Kings drawn, Q = no of Queens drawn
+     * and O = no of non king or queen cards
+     * @return double being the result of the formula (K + Q) / (K + Q + O)
+     */
+    double getProportionOfKingsAndQueensDrawn();
+    
+    /**
+     * Accessor to retrieve the participants guess for this decks type.
+     * @return - The CardAlgorithmCategory that the participant has set for this deck
+     */
+    CardAlgorithmCategory getParticipantsGuess();
+    
+    /**
+     * Accessor to set the participants guess for this decks type.
+     * @param aGuess - The card algorithm type the participant guesses is in use.
+     */
+    void setParticipantsGuess(CardAlgorithmCategory aGuess);
+    
+    /**
+     * Tests if the currently stored participants guess for the algorithm type
+     * matches the algorithm in use.
+     * @return boolean True if the participant has set a guess value that matches
+     * the type of algorithm in use by this deck, False otherwise.
+     */
+    boolean isParticipantGuessCorrect();
     
 }

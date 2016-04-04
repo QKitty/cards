@@ -6,10 +6,13 @@
 package controlers;
 
 import datamodel.ExperimentModelImpl;
+import datamodel.enums.DrawnCardsDisplayType;
 import datamodel.interfaces.IController;
 import datamodel.interfaces.IExperimentModel;
 import datamodel.interfaces.IPerson;
-import javax.swing.JFrame;
+import testing.TestHarness;
+import views.CardsMainForm;
+import views.components.ExperimentDisplayPanel;
 
 /**
  * 
@@ -18,13 +21,18 @@ import javax.swing.JFrame;
 public class PrimaryController implements IController {
     
 //<editor-fold defaultstate="collapsed" desc="Attributes">
-    private IExperimentModel model;
-    private JFrame participantWindow;
+    private final IExperimentModel model;
+    private boolean blnExpRunning;
+    private DrawnCardsDisplayType displayType;
+    private final CardsMainForm mainWin;
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="Constructors">
-    public PrimaryController(){
+    public PrimaryController(CardsMainForm newMainWindow){
+        this.mainWin = newMainWindow;
         this.model = new ExperimentModelImpl();
+        this.blnExpRunning = false;
+        this.displayType = DrawnCardsDisplayType.CARD_HISTORY_DISPLAY;
     }
 //</editor-fold>
 
@@ -43,10 +51,54 @@ public class PrimaryController implements IController {
     public boolean setParticipant(IPerson newParticipant) {
         boolean result = false;
         if(null != newParticipant){
-            
+            this.model.setParticipant(newParticipant);
         }
         return result;
     }
-//</editor-fold>
     
+    @Override
+    public boolean isExperimentRunning() {
+        return this.blnExpRunning;
+    }
+    
+    @Override
+    public void setExperimentRunning(boolean flag) {
+        this.blnExpRunning = flag;
+        this.model.notifyObservers();
+    }
+    
+    @Override
+    public void startExperiment(){
+        this.createDebugDecks();
+        //Ask for trial ID
+        //Create display
+        ExperimentDisplayPanel expDisplay = new ExperimentDisplayPanel(this);
+        //Create "Trial"
+        //Update main window
+        this.mainWin.setView(expDisplay);
+        this.setExperimentRunning(true);
+    }
+
+
+    @Override
+    public DrawnCardsDisplayType getDrawnCardsDisplayType() {
+        return this.displayType;
+    }
+
+    @Override
+    public void setDrawnCardsDisplayType(DrawnCardsDisplayType aType) {
+        if(null != aType && aType != this.displayType){
+            this.displayType = aType;
+            this.model.update();
+        }
+    }
+    
+    @Override
+    public void createDebugDecks(){
+        this.model.addDeck(TestHarness.createFixedDeck());
+        this.model.addDeck(TestHarness.createFixedDeck());
+        this.model.addDeck(TestHarness.createFixedDeck());
+        this.model.addDeck(TestHarness.createFixedDeck());
+    }
+    //</editor-fold>
 }

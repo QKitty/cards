@@ -19,19 +19,20 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import views.svg.SVGIcon;
 
-
 public class SVGIconGenerator implements ICardIconGenerator {
 
     @Override
-    public Icon generateCardIcon(ICard aCard, int width, int height){
+    public Icon generateCardIcon(ICard aCard, int width, int height) {
         Icon result = null;
-        if(null != aCard){
-            if(aCard.isShowingFace()){
+        if (null != aCard) {
+            if (aCard.isShowingFace()) {
                 //Generate Icon to show the playing card
                 StringBuilder path = new StringBuilder("/views/svg/cards/");
                 path.append(aCard.getValue().getCardValueString());
-                path.append("_of_");
-                path.append(aCard.getSuite().getSuiteString());
+                if (!path.toString().contains("joker")) {
+                    path.append("_of_");
+                    path.append(aCard.getSuite().getSuiteString());
+                }
                 path.append(".svg");
                 try (InputStream in = getClass().getResourceAsStream(path.toString())) {
                     InputSource inSource = new InputSource(in);
@@ -41,7 +42,7 @@ public class SVGIconGenerator implements ICardIconGenerator {
                 } catch (ParserConfigurationException | SAXException | IOException | TranscoderException ex) {
                     Logger.getLogger(SVGIconGenerator.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }else{
+            } else {
                 //Generate Icon to show the back of a playing card
                 try (InputStream in = getClass().getResourceAsStream("/views/svg/cards/back_of_card.svg")) {
                     InputSource inSource = new InputSource(in);
@@ -55,7 +56,21 @@ public class SVGIconGenerator implements ICardIconGenerator {
         }
         return result;
     }
-    
+
+    public Icon generateNoCardIcon(int width, int height) {
+        Icon result = null;
+        String path = "/views/svg/cards/No_Card2.svg";
+        try (InputStream in = getClass().getResourceAsStream(path)) {
+            InputSource inSource = new InputSource(in);
+            Document doc = this.loadXMLFromFile(inSource);
+            SVGIcon cardIcon = new SVGIcon(doc, width, height);
+            result = cardIcon;
+        } catch (ParserConfigurationException | SAXException | IOException | TranscoderException ex) {
+            Logger.getLogger(SVGIconGenerator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
     private Document loadXMLFromFile(InputSource inSource) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);

@@ -42,7 +42,7 @@ public class TestHarness {
 
     }
 
-    private static IDeck createFixedDeck() {
+    public static IDeck createFixedDeck() {
         IDeck result;
         List<ICard> pack = new ArrayList<>();
         for (CardSuite currSuite : CardSuite.values()) {
