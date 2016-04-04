@@ -12,6 +12,7 @@ import datamodel.interfaces.IController;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IExperimentModel;
 import datamodel.interfaces.IPerson;
+import datamodel.interfaces.IValidateable;
 import datamodel.people.Participant;
 import datamodel.persistance.ExperimentFactory;
 import java.util.ArrayList;
@@ -185,6 +186,18 @@ public class ExperimentModelImpl implements IExperimentModel {
     }
     
     @Override
+    public boolean hasValidParticipant(){
+        boolean result = false;
+        if(null != this.participant){
+            if(this.participant instanceof IValidateable){
+                IValidateable person = (IValidateable)this.participant;
+                result = person.isInValidState();
+            }
+        }
+        return result;
+    }
+    
+    @Override
     public IController getController() {
         return this.controller;
     }
@@ -236,6 +249,13 @@ public class ExperimentModelImpl implements IExperimentModel {
     @Override
     public boolean registerObserver(Collection<? extends IObserver> clctn) {
         return this.observers.registerObserver(clctn);
+    }
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="IObserver implementation">
+    @Override
+    public void update() {
+        this.notifyObservers();
     }
 //</editor-fold>
 

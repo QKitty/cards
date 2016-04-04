@@ -5,22 +5,28 @@
  */
 package views;
 
+import datamodel.enums.DrawnCardsDisplayType;
+import datamodel.interfaces.IControllable;
+import datamodel.interfaces.IController;
 import java.awt.CardLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 
 /**
  *
  * @author rtucker
  */
-public class TrialSetupDialog extends javax.swing.JDialog implements ItemListener {
-    
+public class TrialSetupDialog extends javax.swing.JDialog implements ItemListener, IControllable {
+
     private final static String MANUAL_CONFIGURATION = "Manual experiment setup";
     private final static String XML_FILE_CONFIGURATION = "XML configuration file setup";
+    private IController conn;
 
     /**
      * Creates new form TrialSetupDialog
+     *
      * @param parent
      * @param modal
      */
@@ -32,8 +38,13 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
         JPanel cardXMLFile = new LoadExperimentFromXML();
         pnlCard.add(cardManual, MANUAL_CONFIGURATION);
         pnlCard.add(cardXMLFile, XML_FILE_CONFIGURATION);
-        CardLayout layout = (CardLayout)pnlCard.getLayout();
+        CardLayout layout = (CardLayout) pnlCard.getLayout();
         layout.show(pnlCard, MANUAL_CONFIGURATION);
+
+        DefaultComboBoxModel model = new DefaultComboBoxModel(DrawnCardsDisplayType.values());
+        model.setSelectedItem(DrawnCardsDisplayType.LAST_CARD_DRAWN_DISPLAY);
+        cbxDisplayType.setModel(model);
+        cbxDisplayType.addItemListener(this);
         this.invalidate();
     }
 
@@ -52,6 +63,8 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
         lblConfig = new javax.swing.JLabel();
         cbxMode = new javax.swing.JComboBox();
         pnlCard = new javax.swing.JPanel();
+        cbxDisplayType = new javax.swing.JComboBox();
+        lblDisplayChoice = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -96,6 +109,12 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
         pnlCard.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         pnlCard.setLayout(new java.awt.CardLayout());
 
+        cbxDisplayType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxDisplayType.setToolTipText("Choose how cards drawn from the card decks are shown");
+
+        lblDisplayChoice.setText("Select drawn cards display:");
+        lblDisplayChoice.setToolTipText("Choose how cards drawn from the card decks are shown");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,7 +127,10 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
                         .addComponent(lblConfig)
                         .addGap(18, 18, 18)
                         .addComponent(cbxMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 409, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                        .addComponent(lblDisplayChoice)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbxDisplayType, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pnlOkCancel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -118,7 +140,9 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblConfig)
-                    .addComponent(cbxMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbxMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxDisplayType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDisplayChoice))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlCard, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -180,23 +204,52 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
+    private javax.swing.JComboBox cbxDisplayType;
     private javax.swing.JComboBox cbxMode;
     private javax.swing.JLabel lblConfig;
+    private javax.swing.JLabel lblDisplayChoice;
     private javax.swing.JPanel pnlCard;
     private javax.swing.JPanel pnlOkCancel;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void itemStateChanged(ItemEvent ie) {
-        String itemName = (String)ie.getItem();
-        CardLayout layout = (CardLayout)pnlCard.getLayout();
-        switch(itemName){
-            case MANUAL_CONFIGURATION:
-                layout.show(pnlCard, MANUAL_CONFIGURATION);
-                break;
-            case XML_FILE_CONFIGURATION:
-                layout.show(pnlCard, XML_FILE_CONFIGURATION);
-                break;
+        if (ie.getSource().equals(this.cbxMode)) {
+            String itemName = (String) ie.getItem();
+            CardLayout layout = (CardLayout) pnlCard.getLayout();
+            switch (itemName) {
+                case MANUAL_CONFIGURATION:
+                    layout.show(pnlCard, MANUAL_CONFIGURATION);
+                    break;
+                case XML_FILE_CONFIGURATION:
+                    layout.show(pnlCard, XML_FILE_CONFIGURATION);
+                    break;
+            }
+        }
+        if (ie.getSource().equals(this.cbxDisplayType)) {
+            if (null != this.conn) {
+                DrawnCardsDisplayType aType = (DrawnCardsDisplayType) this.cbxDisplayType.getSelectedItem();
+                if (!this.conn.getDrawnCardsDisplayType().equals(aType)) {
+                    this.conn.setDrawnCardsDisplayType(aType);
+                }
+            }
         }
     }
+
+//<editor-fold defaultstate="collapsed" desc="IControllable Implementation">
+    @Override
+    public IController getController() {
+        return this.conn;
+    }
+
+    @Override
+    public boolean setController(IController aController) {
+        boolean result = false;
+        if (null != aController) {
+            this.conn = aController;
+            this.cbxDisplayType.setSelectedItem(this.conn.getDrawnCardsDisplayType());
+        }
+        return result;
+    }
+//</editor-fold>
 }

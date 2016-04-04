@@ -29,6 +29,7 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
     
     private final IController conn;
     private final List<BaseCardPanel> displayPanels;
+    private final JButton btnEndTrial;
 
     /**
      * Creates new form ExperimentDisplayPanel
@@ -38,6 +39,7 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
         initComponents();
         this.conn = newConn;
         this.displayPanels = new ArrayList<>();
+        this.btnEndTrial = new JButton("End Trial");
         initialise();
     }
 
@@ -108,11 +110,17 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
 //<editor-fold defaultstate="collapsed" desc="IObserver implementation">
     @Override
     public void update() {
+        if(this.hasValidGuesses()){
+            this.btnEndTrial.setEnabled(true);
+        }else{
+            this.btnEndTrial.setEnabled(false);
+        }
     }
 //</editor-fold>
 
     private void initialise() {
         IExperimentModel expModel = this.conn.getExpModel();
+        expModel.registerObserver(this);
         DrawnCardsDisplayType drawnCardsDisplayType = this.conn.getDrawnCardsDisplayType();
         List<IDeck> decks = expModel.getDecks();
         JPanel pnlViewer = new JPanel(new GridLayout(0, decks.size()));
@@ -126,8 +134,7 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
             i++;
         }
         this.add(pnlViewer, BorderLayout.CENTER);
-        JButton btnEndTrial = new JButton("End Trial");
-        this.add(btnEndTrial, BorderLayout.SOUTH);
+        this.add(this.btnEndTrial, BorderLayout.SOUTH);
         this.revalidate();
     }
     

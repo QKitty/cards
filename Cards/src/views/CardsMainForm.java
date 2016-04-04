@@ -8,6 +8,7 @@ package views;
 import controlers.PrimaryController;
 import datamodel.interfaces.IExperimentModel;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -207,9 +208,15 @@ public class CardsMainForm extends BaseCardWindow {
         }
     }
     
+    public void showInvalidParticipantWarning(){
+        JOptionPane.showMessageDialog(this, "Participant details are invalid. Please enter valid details.", "Error cannot start experiment...", JOptionPane.ERROR_MESSAGE);
+        this.mnuParticipantActionPerformed(null);
+    }
+    
     private void showTrialSettings() {
-        JDialog settingsWin = new TrialSetupDialog(this, true);
+        TrialSetupDialog settingsWin = new TrialSetupDialog(this, true);
         settingsWin.setModal(true);
+        settingsWin.setController(controller);
         ViewUtils.centreDialog(settingsWin);
         settingsWin.setVisible(true);
     }

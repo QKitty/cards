@@ -39,5 +39,24 @@ public enum DrawnCardsDisplayType {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        String result = "UNKNOWN";
+        switch(this){
+            case CARD_HISTORY_DISPLAY:
+                result = "History of drawn cards.";
+                break;
+            case LAST_CARD_DRAWN_DISPLAY:
+                result = "Show last card drawn.";
+                break;
+            case TEXT_DISPLAY:
+                result = "Show count of drawn cards.";
+                break;
+            default:
+                result = "UNKNOWN";
+        }
+        return result;
+    }
     
 }
