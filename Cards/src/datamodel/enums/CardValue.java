@@ -12,7 +12,7 @@ package datamodel.enums;
 public enum CardValue {
 
     JOKER_RED, JOKER_BLACK, ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN,
-    JACK, QUEEN, KING;
+    JACK, QUEEN, KING, NOCARD;
 
     public boolean isFaceCard() {
         boolean result;
@@ -78,6 +78,9 @@ public enum CardValue {
             case JOKER_BLACK:
                 result = "black_joker";
                 break;
+            case NOCARD:
+                result = "No_Card";
+                break;
             default:
                 result = "";
         }
@@ -128,6 +131,9 @@ public enum CardValue {
                 break;
             case 15:
                 result = JOKER_RED;
+                break;
+            case -1:
+                result = NOCARD;
                 break;
             default:
                 result = ACE;

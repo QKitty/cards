@@ -18,6 +18,7 @@ import datamodel.persistance.CardFactory;
 import java.beans.XMLEncoder;
 import java.io.File;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import javax.swing.Icon;
 
@@ -145,10 +146,10 @@ public class Card implements ICard {
         return args;
     }
 
-    @Override
-    public XMLEncoder createXMLEncoder(File aFile) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public XMLEncoder createXMLEncoder(File aFile) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Observer Pattern Implementation">
@@ -187,4 +188,28 @@ public class Card implements ICard {
         this.notifyObservers();
     }
     //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Overridden Object methods">
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
+        if(obj instanceof ICard){
+            ICard otherCard = (ICard)obj;
+            if(this.suite.equals(otherCard.getSuite()) && this.value.equals(otherCard.getValue())){
+                result = true;
+            }
+        }
+        return result;
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.suite);
+        hash = 47 * hash + Objects.hashCode(this.value);
+        return hash;
+    }
+//</editor-fold>
+    
+    
 }

@@ -46,6 +46,8 @@ public class CardsMainForm extends BaseCardWindow {
         mnuParticipant = new javax.swing.JMenuItem();
         mnuBeginTrial = new javax.swing.JMenuItem();
         mnuCompleteExperiment = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        mnuCreateDecks = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -106,6 +108,18 @@ public class CardsMainForm extends BaseCardWindow {
         mnuCompleteExperiment.setText("Complete Experiment");
         mnuCompleteExperiment.setToolTipText("Confirm your choices and save results");
         mnuEdit.add(mnuCompleteExperiment);
+        mnuEdit.add(jSeparator1);
+
+        mnuCreateDecks.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        mnuCreateDecks.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/playing-card--plus.png"))); // NOI18N
+        mnuCreateDecks.setText("Create Card Decks");
+        mnuCreateDecks.setToolTipText("Tool to generate pre-defined card decks");
+        mnuCreateDecks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuCreateDecksActionPerformed(evt);
+            }
+        });
+        mnuEdit.add(mnuCreateDecks);
 
         mnuBar.add(mnuEdit);
 
@@ -149,6 +163,13 @@ public class CardsMainForm extends BaseCardWindow {
         this.controller.startExperiment();
     }//GEN-LAST:event_mnuBeginTrialActionPerformed
 
+    private void mnuCreateDecksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuCreateDecksActionPerformed
+        DeckCreationDialog createDialog = new DeckCreationDialog(this, true);
+        createDialog.setController(controller);
+        ViewUtils.centreDialog(createDialog);
+        createDialog.setVisible(true);
+    }//GEN-LAST:event_mnuCreateDecksActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -183,9 +204,11 @@ public class CardsMainForm extends BaseCardWindow {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem mnuBeginTrial;
     private javax.swing.JMenuItem mnuCompleteExperiment;
+    private javax.swing.JMenuItem mnuCreateDecks;
     private javax.swing.JMenu mnuEdit;
     private javax.swing.JMenu mnuFile;
     private javax.swing.JMenuItem mnuItemSaveTrialData;

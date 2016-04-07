@@ -7,12 +7,15 @@ package datamodel.persistance;
 
 import datamodel.deckalgorithms.CustomisableInfiniteDeckAlgorithm;
 import datamodel.deckalgorithms.FiniteKnownDeckAlgorithm;
+import datamodel.deckalgorithms.FiniteRandomlyGeneratedDeckAlgorithm;
 import datamodel.deckalgorithms.FrequencyInfiniteDeckAlgorithm;
 import datamodel.deckalgorithms.KingHiInfoInfiniteDeckAlgorithm;
 import datamodel.deckalgorithms.QueenHiInfoInfiniteDeckAlgorithm;
+import datamodel.enums.CardAlgorithmCategory;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeckAlgorithm;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * A Factory to generate deck algorithms on request
@@ -38,6 +41,10 @@ public class DeckAlgorithmFactory {
     
     public static IDeckAlgorithm createQueenHiInfoInfiniteDeckAlgorithm(int maxCardsBetweenSpecialCard){
         return new QueenHiInfoInfiniteDeckAlgorithm(maxCardsBetweenSpecialCard);
+    }
+    
+    public static IDeckAlgorithm createFiniteRandomlyGeneratedDeckAlgorithm(double kingProb, double queenProb, CardAlgorithmCategory cat, List<ICard> cardsInDeck){
+        return new FiniteRandomlyGeneratedDeckAlgorithm(kingProb, queenProb, cat, cardsInDeck);
     }
     
 }

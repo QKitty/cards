@@ -7,6 +7,7 @@ package datamodel.interfaces;
 
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import datamodel.enums.DrawnCardsDisplayType;
+import views.DeckCreationDialogModel;
 
 /**
  * This interface represents the controller for the application
@@ -68,5 +69,11 @@ public interface IController extends IObserver<Void> {
      * Create debugging decks - DELETE LATER
      */
     void createDebugDecks();
+    
+    /**
+     * Accessor to retrieve the current DeckCreationDialogModel
+     * @return A DeckCreationDialogModel object for use with the DeckCreationDialog
+     */
+    DeckCreationDialogModel getDeckCreationDialogModel();
     
 }

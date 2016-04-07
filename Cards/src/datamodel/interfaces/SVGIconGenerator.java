@@ -5,6 +5,7 @@
  */
 package datamodel.interfaces;
 
+import datamodel.enums.CardValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
@@ -28,10 +29,15 @@ public class SVGIconGenerator implements ICardIconGenerator {
             if (aCard.isShowingFace()) {
                 //Generate Icon to show the playing card
                 StringBuilder path = new StringBuilder("/views/svg/cards/");
-                path.append(aCard.getValue().getCardValueString());
-                if (!path.toString().contains("joker")) {
-                    path.append("_of_");
-                    path.append(aCard.getSuite().getSuiteString());
+                if (!CardValue.NOCARD.equals(aCard.getValue())) {
+                    path.append(aCard.getValue().getCardValueString());
+                    if (!path.toString().contains("joker")) {
+                        path.append("_of_");
+                        path.append(aCard.getSuite().getSuiteString());
+                    }
+                } else {
+                    //No card code here
+                    path.append(aCard.getValue().toString());
                 }
                 path.append(".svg");
                 try (InputStream in = getClass().getResourceAsStream(path.toString())) {
@@ -59,7 +65,7 @@ public class SVGIconGenerator implements ICardIconGenerator {
 
     public Icon generateNoCardIcon(int width, int height) {
         Icon result = null;
-        String path = "/views/svg/cards/No_Card2.svg";
+        String path = "/views/svg/cards/No_Card.svg";
         try (InputStream in = getClass().getResourceAsStream(path)) {
             InputSource inSource = new InputSource(in);
             Document doc = this.loadXMLFromFile(inSource);

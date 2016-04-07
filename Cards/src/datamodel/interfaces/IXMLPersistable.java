@@ -13,6 +13,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author qkitt
  */
-public interface IXMLPersistable {
+public interface IXMLPersistable extends Serializable {
 
     /**
      * Accessor to retrieve the factory to be used to recreate the object

@@ -17,7 +17,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="No_Card.svg">
+   sodipodi:docname="No_Card2.svg">
   <defs
      id="defs4">
     <linearGradient
@@ -76,19 +76,21 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-749.02857)">
-    <flowRoot
+    <text
        xml:space="preserve"
-       id="flowRoot8068"
-       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
-       transform="translate(0,749.02857)"><flowRegion
-         id="flowRegion8070"><rect
-           id="rect8072"
-           width="172"
-           height="82"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="25"
+       y="902.72455"
+       id="text8086"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="25"
+         y="902.72455"
+         id="tspan8088"><tspan
            x="25"
-           y="112.33365"
-           style="fill:#ff0000;fill-opacity:1;" /></flowRegion><flowPara
-         id="flowPara8074">No Card</flowPara></flowRoot>    <rect
+           y="902.72455"
+           id="tspan8090">No Card</tspan></tspan></text>
+    <rect
        style="opacity:0.069;fill:url(#radialGradient8084);fill-opacity:1;fill-rule:nonzero"
        id="rect8076"
        width="210"

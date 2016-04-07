@@ -12,6 +12,7 @@ import datamodel.interfaces.IExperimentModel;
 import datamodel.interfaces.IPerson;
 import testing.TestHarness;
 import views.CardsMainForm;
+import views.DeckCreationDialogModel;
 import views.components.ExperimentDisplayPanel;
 
 /**
@@ -25,6 +26,7 @@ public class PrimaryController implements IController {
     private boolean blnExpRunning;
     private DrawnCardsDisplayType displayType;
     private final CardsMainForm mainWin;
+    private final DeckCreationDialogModel deckCreationModel;
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Constructors">
@@ -33,6 +35,7 @@ public class PrimaryController implements IController {
         this.model = new ExperimentModelImpl();
         this.blnExpRunning = false;
         this.displayType = DrawnCardsDisplayType.TEXT_DISPLAY;
+        this.deckCreationModel = new DeckCreationDialogModel();
     }
 //</editor-fold>
 
@@ -106,5 +109,12 @@ public class PrimaryController implements IController {
             this.model.addDeck(TestHarness.createFixedDeck());
         }
     }
+    
+    @Override
+    public DeckCreationDialogModel getDeckCreationDialogModel() {
+        return this.deckCreationModel;
+    }
     //</editor-fold>
+
+    
 }
