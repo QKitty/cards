@@ -14,11 +14,15 @@ import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IExperimentModel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -127,6 +131,7 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
         int i = 0;
         for(IDeck currDeck : decks){
             BaseCardPanel aDisplay = new BaseCardPanel();
+            aDisplay.setCardsDrawnRecordList(expModel.getCardDrawnRecordList());
             aDisplay.setCardDeck(currDeck);
             aDisplay.setSubPanelDisplayType(drawnCardsDisplayType);
             this.displayPanels.add(aDisplay);
@@ -134,6 +139,20 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
             i++;
         }
         this.add(pnlViewer, BorderLayout.CENTER);
+        //Setup the End Trial Button
+        this.btnEndTrial.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                conn.endExperiment();
+                } catch (IllegalStateException ex){
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Unable to end experiment", JOptionPane.ERROR_MESSAGE);
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Cannot save experiment data.", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         this.add(this.btnEndTrial, BorderLayout.SOUTH);
         this.revalidate();
     }

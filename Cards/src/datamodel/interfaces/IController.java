@@ -7,6 +7,7 @@ package datamodel.interfaces;
 
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import datamodel.enums.DrawnCardsDisplayType;
+import java.io.IOException;
 import views.DeckCreationDialogModel;
 
 /**
@@ -52,6 +53,17 @@ public interface IController extends IObserver<Void> {
     void startExperiment();
     
     /**
+     * If the experiment is in a valid state for completion this method ends
+     * the experiment and saves the results
+     * @throws IllegalStateException - if the experiment is not running or if
+     * a running experiment does not have a valid guess for each card deck
+     * in the experiment.
+     * @throws java.io.IOException - if the data file for this experiment could
+     * not be saved.
+     */
+    void endExperiment() throws IllegalStateException, IOException;
+    
+    /**
      * Accessor to retrieve the type of display to use for the current experiment
      * @return - A DrawnCardsDisplayType defining how a decks drawn card list should
      * be displayed.
@@ -75,5 +87,10 @@ public interface IController extends IObserver<Void> {
      * @return A DeckCreationDialogModel object for use with the DeckCreationDialog
      */
     DeckCreationDialogModel getDeckCreationDialogModel();
+    
+    /**
+     * Resets the experiment for the next experiment run.
+     */
+    void resetExperiment();
     
 }

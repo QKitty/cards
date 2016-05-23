@@ -7,7 +7,9 @@ package views;
 
 import controlers.PrimaryController;
 import datamodel.interfaces.IExperimentModel;
-import javax.swing.JDialog;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -16,8 +18,6 @@ import javax.swing.JPanel;
  * @author rtucker
  */
 public class CardsMainForm extends BaseCardWindow {
-    
-    private IExperimentModel myExperiment;
 
     /**
      * Creates new form CardsMainForm
@@ -96,6 +96,7 @@ public class CardsMainForm extends BaseCardWindow {
         mnuBeginTrial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/playing-card--plus.png"))); // NOI18N
         mnuBeginTrial.setText("Start Experiment");
         mnuBeginTrial.setToolTipText("Begin a new trial");
+        mnuBeginTrial.setEnabled(false);
         mnuBeginTrial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuBeginTrialActionPerformed(evt);
@@ -107,6 +108,12 @@ public class CardsMainForm extends BaseCardWindow {
         mnuCompleteExperiment.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tick-circle-frame.png"))); // NOI18N
         mnuCompleteExperiment.setText("Complete Experiment");
         mnuCompleteExperiment.setToolTipText("Confirm your choices and save results");
+        mnuCompleteExperiment.setEnabled(false);
+        mnuCompleteExperiment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuCompleteExperimentActionPerformed(evt);
+            }
+        });
         mnuEdit.add(mnuCompleteExperiment);
         mnuEdit.add(jSeparator1);
 
@@ -169,6 +176,18 @@ public class CardsMainForm extends BaseCardWindow {
         ViewUtils.centreDialog(createDialog);
         createDialog.setVisible(true);
     }//GEN-LAST:event_mnuCreateDecksActionPerformed
+
+    private void mnuCompleteExperimentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuCompleteExperimentActionPerformed
+        try {
+            this.controller.endExperiment();
+        } catch (IllegalStateException ex) {
+            Logger.getLogger(CardsMainForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Experiment in illegal state to complete...", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            Logger.getLogger(CardsMainForm.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error saving to file...", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_mnuCompleteExperimentActionPerformed
 
     /**
      * @param args the command line arguments
@@ -246,9 +265,10 @@ public class CardsMainForm extends BaseCardWindow {
 
     private void initialise() {
         this.controller = new PrimaryController(this);
-        this.myExperiment = this.controller.getExpModel();
-        this.myExperiment.registerObserver(this);
-        this.myExperiment.notifyObservers();
+        IExperimentModel myExperiment;
+        myExperiment = this.controller.getExpModel();
+        myExperiment.registerObserver(this);
+        myExperiment.notifyObservers();
     }
 
     private void configureMenus() {
@@ -261,7 +281,13 @@ public class CardsMainForm extends BaseCardWindow {
             mnuCompleteExperiment.setEnabled(true);
         } else {
             //Enable Participant entry, Experiment setup & Start Experiment
-            mnuBeginTrial.setEnabled(true);
+            int noOfDecks = this.controller.getExpModel().getNoOfDecks();
+            boolean hasValidParticipant = this.controller.getExpModel().hasValidParticipant();
+            if(0 < noOfDecks && hasValidParticipant){
+                mnuBeginTrial.setEnabled(true);
+            } else {
+                mnuBeginTrial.setEnabled(false);
+            }
             mnuParticipant.setEnabled(true);
             mnuTrialSettings.setEnabled(true);
             //Disable complete experiment

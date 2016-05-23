@@ -43,6 +43,27 @@ public enum CardAlgorithmCategory {
         }
         return result;
     }
+    
+    public boolean isGuessCorrect(ParticipantGuess aGuess){
+        boolean result = false;
+        if(null != aGuess){
+            switch(this){
+                case KING_HI_INFORMATIVE:
+                case KING_LOW_INFORMATIVE:
+                    if(aGuess.equals(ParticipantGuess.KING)){
+                        result = true;
+                    }
+                    break;
+                case QUEEN_HI_INFORMATIVE:
+                case QUEEN_LOW_INFORMATIVE:
+                    if(aGuess.equals(ParticipantGuess.QUEEN)){
+                        result = true;
+                    }
+                    break;
+            }
+        }
+        return result;
+    }
 
     @Override
     public String toString() {

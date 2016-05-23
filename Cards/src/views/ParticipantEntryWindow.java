@@ -284,6 +284,7 @@ public class ParticipantEntryWindow extends BaseCardWindow {
                     try {
                         Robot robot = new Robot();
                         robot.keyPress(KeyEvent.VK_TAB);
+                        robot.keyRelease(KeyEvent.VK_TAB);
                     } catch (AWTException ex) {
                         Logger.getLogger(ParticipantEntryWindow.class.getName()).log(Level.SEVERE, null, ex);
                     }

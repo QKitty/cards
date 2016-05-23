@@ -7,6 +7,8 @@ package datamodel.interfaces;
 
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import com.gmail.qkitty6.patterns.observer.ISubject;
+import datamodel.ICardDrawnRecordList;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -23,11 +25,13 @@ public interface IExperimentModel extends Iterable<IDeck>, IObserver<Void>, ISub
     boolean isExperimentComplete();
     
     /**
-     * Accessor to set the current status of the experiments complete / incomplete
-     * flag.
-     * @param flag
+     * Marks the current experiment as complete and saves off the results file.
+     * @return A boolean true if the data was save successfully, false otherwise.
+     * @throws IllegalStateException - Thrown if the model has not stored a guess
+     * for every deck in it.
+     * @throws java.io.IOException - Thrown if the experiment data file cannot be saved.
      */
-    void setExperimentComplete(boolean flag);
+    boolean completeExperiment() throws IllegalStateException, IOException;
     
     /**
      * Add a new deck to the experiment
@@ -112,4 +116,23 @@ public interface IExperimentModel extends Iterable<IDeck>, IObserver<Void>, ISub
      * False otherwise.
      */
     boolean hasValidParticipant();
+    
+    /**
+     * Accessor to retrieve the ICardDrawnRecordList for this experiment model
+     * @return - An ICardDrawnRecordList object containing a record of every card drawn from a deck in order.
+     */
+    ICardDrawnRecordList getCardDrawnRecordList();
+    
+    /**
+     * Retrieves the total number of cards drawn from all decks in this experiment model
+     * @return - integer being the sum of all cards drawn from all decks in the experiment model
+     */
+    default int getTotalCardsDrawn(){
+        int count = 0;
+        for(IDeck currDeck : this){
+            int cardsDrawn = currDeck.getNoOfKingsDrawn() + currDeck.getNoOfQueensDrawn() + currDeck.getNoOfOtherCardsDrawn();
+            count += cardsDrawn;
+        }
+        return count;
+    }
 }

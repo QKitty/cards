@@ -71,6 +71,7 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Start Experiment"/>
                 <Property name="toolTipText" type="java.lang.String" value="Begin a new trial"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuBeginTrialActionPerformed"/>
@@ -86,7 +87,11 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Complete Experiment"/>
                 <Property name="toolTipText" type="java.lang.String" value="Confirm your choices and save results"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuCompleteExperimentActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>

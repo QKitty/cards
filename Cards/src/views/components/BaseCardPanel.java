@@ -8,11 +8,13 @@ package views.components;
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import com.gmail.qkitty6.patterns.observer.ISubject;
 import com.gmail.qkitty6.patterns.observer.ISubjectImpl;
+import datamodel.ICardDrawnRecordList;
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
 import datamodel.enums.DrawnCardsDisplayType;
+import datamodel.enums.ParticipantGuess;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
@@ -33,6 +35,7 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
     protected ICard dumbyBackCard;
     protected IDeck myCardDeck;
     protected DrawnCardsDisplayType subPanelType;
+    private ICardDrawnRecordList cardsDrawnRecordList;
     private final ISubject observers;
 
     /**
@@ -114,8 +117,8 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
                 .addContainerGap())
         );
 
-        DefaultComboBoxModel model = new DefaultComboBoxModel(CardAlgorithmCategory.values());
-        model.setSelectedItem(CardAlgorithmCategory.UNKNOWN);
+        DefaultComboBoxModel model = new DefaultComboBoxModel(ParticipantGuess.values());
+        model.setSelectedItem(ParticipantGuess.UNKNOWN);
         cbxGuess.setModel(model);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -125,6 +128,9 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
                 //Draw Card
                 ICard nextCard = myCardDeck.drawCard();
                 nextCard.setShowingFace(true);
+                if(null != this.cardsDrawnRecordList){
+                    this.cardsDrawnRecordList.recordCardDrawn(myCardDeck);
+                }
                 this.update();
             }
         }
@@ -132,10 +138,10 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
 
     private void cbxGuessItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxGuessItemStateChanged
         if (null != this.myCardDeck) {
-            CardAlgorithmCategory currModel = this.myCardDeck.getParticipantsGuess();
-            CardAlgorithmCategory currSelection = (CardAlgorithmCategory) cbxGuess.getSelectedItem();
+            ParticipantGuess currModel = this.myCardDeck.getParticipantsGuess();
+            ParticipantGuess currSelection = (ParticipantGuess) cbxGuess.getSelectedItem();
             if (!currSelection.equals(currModel)) {
-                this.myCardDeck.setParticipantsGuess((CardAlgorithmCategory) cbxGuess.getSelectedItem());
+                this.myCardDeck.setParticipantsGuess((ParticipantGuess) cbxGuess.getSelectedItem());
             }
         }
     }//GEN-LAST:event_cbxGuessItemStateChanged
@@ -269,18 +275,23 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
     }
 
     @Override
-    public CardAlgorithmCategory getParticipantsGuess() {
+    public ParticipantGuess getParticipantsGuess() {
         return this.myCardDeck.getParticipantsGuess();
     }
 
     @Override
-    public void setParticipantsGuess(CardAlgorithmCategory aGuess) {
+    public void setParticipantsGuess(ParticipantGuess aGuess) {
         this.myCardDeck.setParticipantsGuess(aGuess);
     }
 
     @Override
     public boolean isParticipantGuessCorrect() {
         return this.myCardDeck.isParticipantGuessCorrect();
+    }
+
+    @Override
+    public boolean hasParticipantGuessSet() {
+        return this.myCardDeck.hasParticipantGuessSet();
     }
     //</editor-fold>
 
@@ -350,13 +361,17 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
             throw new NullPointerException("Cannot set sub panel display type to NULL.");
         }
     }
-    
-    public boolean hasGuess(){
+
+    public boolean hasGuess() {
         boolean result = false;
-        if(null != this.myCardDeck && this.cbxGuess.getSelectedItem() != CardAlgorithmCategory.UNKNOWN){
+        if (null != this.myCardDeck && this.cbxGuess.getSelectedItem() != ParticipantGuess.UNKNOWN) {
             result = true;
         }
         return result;
+    }
+    
+    public void setCardsDrawnRecordList(ICardDrawnRecordList recordList){
+        this.cardsDrawnRecordList = recordList;
     }
 
     private void setIcon() {
@@ -378,4 +393,5 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
         scrSubPanel.setViewportView(aPanel);
         repaint();
     }
+
 }

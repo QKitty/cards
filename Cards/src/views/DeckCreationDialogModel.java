@@ -240,7 +240,7 @@ public class DeckCreationDialogModel extends SubjectSetBaseClass implements IVal
         this.ratio = this.RValue / this.PValue;
         this.usingRatio = true;
         this.numberOfCards = 500;
-        String destFolder = System.getProperty("user.home") + File.separator + "GeneratedDecks";
+        String destFolder = DeckCreationDialogModel.getDefaultDeckDirectory().getAbsolutePath();
         this.destinationFolder = new File(destFolder);
         VetoableChangeListenerProxy vetoProxy = new VetoableChangeListenerProxy(PROP_RVALUE, new UsingRatioVeto());
         this.addVetoableChangeListener(vetoProxy);
@@ -332,6 +332,11 @@ public class DeckCreationDialogModel extends SubjectSetBaseClass implements IVal
                 result = true;
             }
         }
+        return result;
+    }
+    
+    public static File getDefaultDeckDirectory(){
+        File result = new File(System.getProperty("user.home") + File.separator + "GeneratedDecks");
         return result;
     }
 

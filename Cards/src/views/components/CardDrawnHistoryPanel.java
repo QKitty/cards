@@ -10,6 +10,7 @@ import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.CardSuite;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
+import datamodel.enums.ParticipantGuess;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
@@ -239,18 +240,23 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
     }
     
     @Override
-    public CardAlgorithmCategory getParticipantsGuess() {
+    public ParticipantGuess getParticipantsGuess() {
         return this.myCardDeck.getParticipantsGuess();
     }
 
     @Override
-    public void setParticipantsGuess(CardAlgorithmCategory aGuess) {
+    public void setParticipantsGuess(ParticipantGuess aGuess) {
         this.myCardDeck.setParticipantsGuess(aGuess);
     }
 
     @Override
     public boolean isParticipantGuessCorrect() {
         return this.myCardDeck.isParticipantGuessCorrect();
+    }
+    
+    @Override
+    public boolean hasParticipantGuessSet() {
+        return this.myCardDeck.hasParticipantGuessSet();
     }
 //</editor-fold>
 

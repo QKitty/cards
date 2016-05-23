@@ -5,24 +5,35 @@
  */
 package views;
 
+import com.gmail.qkitty6.patterns.observer.IObserver;
+import datamodel.DeckCardFileScanner;
 import datamodel.enums.DrawnCardsDisplayType;
-import datamodel.interfaces.IControllable;
 import datamodel.interfaces.IController;
-import java.awt.CardLayout;
+import datamodel.interfaces.IDeckCardFileScanner;
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JPanel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import views.components.DeckCardFileRecordTableModel;
+import views.tabelrendering.DeckCardFileRecordCellRenderer;
+import views.tabelrendering.IncExcTableCellEditor;
 
 /**
  *
  * @author rtucker
  */
-public class TrialSetupDialog extends javax.swing.JDialog implements ItemListener, IControllable {
+public class TrialSetupDialog extends BaseCardsDialog implements IObserver<Void> {
 
-    private final static String MANUAL_CONFIGURATION = "Manual experiment setup";
-    private final static String XML_FILE_CONFIGURATION = "XML configuration file setup";
-    private IController conn;
+    private final String NOPATHTEXT;
+    private final IDeckCardFileScanner scanner;
+    private JFileChooser browseWin;
 
     /**
      * Creates new form TrialSetupDialog
@@ -33,18 +44,15 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
     public TrialSetupDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.cbxMode.addItemListener(this);
-        JPanel cardManual = new ManuallyDefineExperiment();
-        JPanel cardXMLFile = new LoadExperimentFromXML();
-        pnlCard.add(cardManual, MANUAL_CONFIGURATION);
-        pnlCard.add(cardXMLFile, XML_FILE_CONFIGURATION);
-        CardLayout layout = (CardLayout) pnlCard.getLayout();
-        layout.show(pnlCard, MANUAL_CONFIGURATION);
+        NOPATHTEXT = "Path to experiment card deck directory.";
 
         DefaultComboBoxModel model = new DefaultComboBoxModel(DrawnCardsDisplayType.values());
         model.setSelectedItem(DrawnCardsDisplayType.LAST_CARD_DRAWN_DISPLAY);
         cbxDisplayType.setModel(model);
-        cbxDisplayType.addItemListener(this);
+        cbxDisplayType.addItemListener(new DisplayTypeChanger());
+        File defaultTarget = DeckCreationDialogModel.getDefaultDeckDirectory();
+        this.scanner = new DeckCardFileScanner(defaultTarget);
+        this.scanner.registerObserver(this);
         this.invalidate();
     }
 
@@ -60,11 +68,14 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
         pnlOkCancel = new javax.swing.JPanel();
         btnOk = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        lblConfig = new javax.swing.JLabel();
-        cbxMode = new javax.swing.JComboBox();
-        pnlCard = new javax.swing.JPanel();
         cbxDisplayType = new javax.swing.JComboBox();
         lblDisplayChoice = new javax.swing.JLabel();
+        lblDirPath = new javax.swing.JLabel();
+        btnBrowseDir = new javax.swing.JButton();
+        txtPath = new javax.swing.JTextField();
+        btnScanForCradDecks = new javax.swing.JButton();
+        scrTableHolder = new javax.swing.JScrollPane();
+        tblDecks = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -72,6 +83,11 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
 
         btnOk.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tick-circle-frame.png"))); // NOI18N
         btnOk.setText("OK");
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
 
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cross-octagon-frame.png"))); // NOI18N
         btnCancel.setText("Cancel");
@@ -88,7 +104,7 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
             .addGroup(pnlOkCancelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnOk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 539, Short.MAX_VALUE)
                 .addComponent(btnCancel)
                 .addContainerGap())
         );
@@ -102,18 +118,65 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
                 .addContainerGap())
         );
 
-        lblConfig.setText("Select Configuration");
-
-        cbxMode.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Manual experiment setup", "XML configuration file setup" }));
-
-        pnlCard.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        pnlCard.setLayout(new java.awt.CardLayout());
-
         cbxDisplayType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbxDisplayType.setToolTipText("Choose how cards drawn from the card decks are shown");
 
-        lblDisplayChoice.setText("Select drawn cards display:");
+        lblDisplayChoice.setText("Select drawn cards display type:");
         lblDisplayChoice.setToolTipText("Choose how cards drawn from the card decks are shown");
+
+        lblDirPath.setText("Directory to load card decks from:");
+        lblDirPath.setToolTipText("Enter / browse to directory to load decks from");
+
+        btnBrowseDir.setText("...");
+        btnBrowseDir.setToolTipText("Browse to directory containing card deck files");
+        btnBrowseDir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrowseDirActionPerformed(evt);
+            }
+        });
+
+        txtPath.setText("Path to experiment card deck directory.");
+        txtPath.setToolTipText("Specify the path to the directory containing the card deck files for the experiment.");
+        txtPath.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtPathFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtPathFocusLost(evt);
+            }
+        });
+        txtPath.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPathKeyPressed(evt);
+            }
+        });
+
+        btnScanForCradDecks.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        btnScanForCradDecks.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/file_search.png"))); // NOI18N
+        btnScanForCradDecks.setText("Scan directory for card deck files");
+        btnScanForCradDecks.setToolTipText("Scan the specified directory for card deck xml files");
+        btnScanForCradDecks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnScanForCradDecksActionPerformed(evt);
+            }
+        });
+
+        scrTableHolder.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        tblDecks.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        scrTableHolder.setViewportView(tblDecks);
+        tblDecks.setDefaultRenderer(Object.class, new DeckCardFileRecordCellRenderer());
+        tblDecks.setDefaultEditor(Object.class, new IncExcTableCellEditor());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -122,16 +185,19 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlCard, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(lblConfig)
-                        .addGap(18, 18, 18)
-                        .addComponent(cbxMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                    .addComponent(scrTableHolder)
+                    .addComponent(btnScanForCradDecks, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(lblDisplayChoice)
                         .addGap(18, 18, 18)
-                        .addComponent(cbxDisplayType, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlOkCancel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cbxDisplayType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlOkCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(lblDirPath)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPath)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBrowseDir)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -139,24 +205,67 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblConfig)
-                    .addComponent(cbxMode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxDisplayType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDisplayChoice))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlCard, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDirPath)
+                    .addComponent(btnBrowseDir)
+                    .addComponent(txtPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnScanForCradDecks)
+                .addGap(18, 18, 18)
+                .addComponent(scrTableHolder, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(pnlOkCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
+
+        txtPath.setText(System.getProperty("user.home"));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
     }//GEN-LAST:event_btnCancelActionPerformed
+
+    private void txtPathFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPathFocusGained
+        if (txtPath.getText().equals(this.NOPATHTEXT)) {
+            this.txtPath.setText("");
+        }
+    }//GEN-LAST:event_txtPathFocusGained
+
+    private void txtPathFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtPathFocusLost
+        if (txtPath.getText().isEmpty()) {
+            this.txtPath.setText(NOPATHTEXT);
+        }
+    }//GEN-LAST:event_txtPathFocusLost
+
+    private void txtPathKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPathKeyPressed
+        int keyCode = evt.getKeyCode();
+        if (keyCode == KeyEvent.VK_ENTER) {
+            try {
+                Robot robot = new Robot();
+                robot.keyPress(KeyEvent.VK_TAB);
+                robot.keyRelease(KeyEvent.VK_TAB);
+            } catch (AWTException ex) {
+                Logger.getLogger(TrialSetupDialog.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_txtPathKeyPressed
+
+    private void btnScanForCradDecksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScanForCradDecksActionPerformed
+        this.scanDirectory();
+    }//GEN-LAST:event_btnScanForCradDecksActionPerformed
+
+    private void btnBrowseDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrowseDirActionPerformed
+        processBrowseAction();
+    }//GEN-LAST:event_btnBrowseDirActionPerformed
+
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        createDataModel();
+    }//GEN-LAST:event_btnOkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -174,74 +283,41 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TrialSetupDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TrialSetupDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TrialSetupDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TrialSetupDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
+
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                TrialSetupDialog dialog = new TrialSetupDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            TrialSetupDialog dialog = new TrialSetupDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBrowseDir;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnOk;
+    private javax.swing.JButton btnScanForCradDecks;
     private javax.swing.JComboBox cbxDisplayType;
-    private javax.swing.JComboBox cbxMode;
-    private javax.swing.JLabel lblConfig;
+    private javax.swing.JLabel lblDirPath;
     private javax.swing.JLabel lblDisplayChoice;
-    private javax.swing.JPanel pnlCard;
     private javax.swing.JPanel pnlOkCancel;
+    private javax.swing.JScrollPane scrTableHolder;
+    private javax.swing.JTable tblDecks;
+    private javax.swing.JTextField txtPath;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void itemStateChanged(ItemEvent ie) {
-        if (ie.getSource().equals(this.cbxMode)) {
-            String itemName = (String) ie.getItem();
-            CardLayout layout = (CardLayout) pnlCard.getLayout();
-            switch (itemName) {
-                case MANUAL_CONFIGURATION:
-                    layout.show(pnlCard, MANUAL_CONFIGURATION);
-                    break;
-                case XML_FILE_CONFIGURATION:
-                    layout.show(pnlCard, XML_FILE_CONFIGURATION);
-                    break;
-            }
-        }
-        if (ie.getSource().equals(this.cbxDisplayType)) {
-            if (null != this.conn) {
-                DrawnCardsDisplayType aType = (DrawnCardsDisplayType) this.cbxDisplayType.getSelectedItem();
-                if (!this.conn.getDrawnCardsDisplayType().equals(aType)) {
-                    this.conn.setDrawnCardsDisplayType(aType);
-                }
-            }
-        }
-    }
-
 //<editor-fold defaultstate="collapsed" desc="IControllable Implementation">
-    @Override
-    public IController getController() {
-        return this.conn;
-    }
-
     @Override
     public boolean setController(IController aController) {
         boolean result = false;
@@ -250,6 +326,102 @@ public class TrialSetupDialog extends javax.swing.JDialog implements ItemListene
             this.cbxDisplayType.setSelectedItem(this.conn.getDrawnCardsDisplayType());
         }
         return result;
+    }
+//</editor-fold>
+
+    @Override
+    public void update() {
+        if (null != this.conn) {
+            this.cbxDisplayType.setSelectedItem(this.conn.getDrawnCardsDisplayType());
+        }
+        File target = new File(this.txtPath.getText());
+        if (target.exists()) {
+            this.scanner.setTargetDirectory(target);
+        } else {
+            this.scanner.setTargetDirectory(DeckCreationDialogModel.getDefaultDeckDirectory());
+        }
+        if (null != this.conn) {
+            if (scanner.isInValidState()) {
+                //YOIU ARE HERE FINISH THIS
+                DeckCardFileRecordTableModel model = new DeckCardFileRecordTableModel(scanner);
+                tblDecks.setModel(model);
+            }
+        }
+    }
+
+    private void scanDirectory() {
+        if (null != this.conn) {
+            File targetDir = this.scanner.getTargetDirectory();
+            if (targetDir.exists()) {
+                if (this.scanner.performDirectoryScan()) {
+                    //this.scanner.populateModel(this.conn.getExpModel()); - moved to the OK button
+                    this.update();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Unable to find card deck data files to load.", "No card decks available...", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Directory " + targetDir.getAbsolutePath() + " does not exist!", "Cannot perform directory scan...", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void processBrowseAction() {
+        File destinationFolder = null;
+        if (!txtPath.getText().isEmpty()) {
+            destinationFolder = new File(txtPath.getText());
+            if (!destinationFolder.exists()) {
+                destinationFolder = null;
+            }
+        }
+        configFileChooser();
+
+        //If destination folder exists and is a directory set the file chooser to show it
+        //else show users home directory
+        if (destinationFolder != null && destinationFolder.isDirectory()) {
+            this.browseWin.setSelectedFile(destinationFolder);
+        } else {
+            this.browseWin.setSelectedFile(new File(System.getProperty("user.home")));
+        }
+        //Show the file chooser
+        int intOpenResult = this.browseWin.showOpenDialog(this);
+        if (intOpenResult == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = this.browseWin.getSelectedFile();
+            if (null != selectedFile) {
+                txtPath.setText(selectedFile.getAbsolutePath());
+            }
+        }
+    }
+
+    private void configFileChooser() {
+        if (null == this.browseWin) {
+            this.browseWin = new JFileChooser();
+            this.browseWin.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        }
+    }
+
+    private void createDataModel() {
+        try {
+            this.scanner.populateModel(this.conn.getExpModel());
+            this.setVisible(false);
+        } catch (IllegalStateException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Cannot crete data model...", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+//<editor-fold defaultstate="collapsed" desc="Inner classes. YUK!">
+    private class DisplayTypeChanger implements ItemListener {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (null != conn && e.getSource().equals(cbxDisplayType)) {
+                if (null != conn) {
+                    DrawnCardsDisplayType aType = (DrawnCardsDisplayType) cbxDisplayType.getSelectedItem();
+                    if (!conn.getDrawnCardsDisplayType().equals(aType)) {
+                        conn.setDrawnCardsDisplayType(aType);
+                    }
+                }
+            }
+        }
     }
 //</editor-fold>
 }

@@ -1,0 +1,25 @@
+Initialising parameters:,,,,Summary statistics:
+Deck Name,Deck Identity:,,0
+UNKNOWN,KING HI INFORMATIVE
+UNKNOWN,KING LOW INFORMATIVE
+UNKNOWN,QUEEN HI INFORMATIVE
+UNKNOWN,QUEEN LOW INFORMATIVE
+
+Type of trial:,FIXED_DECK
+
+Participant ID:
+1
+,,,,,,Number of kings drawn,Number of queens drawn,Number of 'other' cards drawn,Proportion (kings:queens) drawn,Proportion ([kings+queens]:others) drawn
+,,,,,UNKNOWN,0,0,0,NaN,NaN
+,,,,,UNKNOWN,0,0,0,NaN,NaN
+,,,,,UNKNOWN,0,0,0,NaN,NaN
+,,,,,UNKNOWN,0,0,0,NaN,NaN
+
+,,,,,,Sum of all cards turned
+,,,,,UNKNOWN,0
+,,,,,UNKNOWN,0
+,,,,,UNKNOWN,0
+,,,,,UNKNOWN,0
+
+,,,,,,Guess at deck ID,Correctly identified
+,,,,,UNKNOWN,KING,YES,,,,,UNKNOWN,KING,YES,,,,,UNKNOWN,KING,NO,,,,,UNKNOWN,KING,NO

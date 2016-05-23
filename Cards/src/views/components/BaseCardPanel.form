@@ -75,7 +75,7 @@
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cbxGuessItemStateChanged"/>
       </Events>
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="DefaultComboBoxModel model = new DefaultComboBoxModel(CardAlgorithmCategory.values());&#xa;model.setSelectedItem(CardAlgorithmCategory.UNKNOWN);&#xa;cbxGuess.setModel(model);"/>
+        <AuxValue name="JavaCodeGenerator_allCodePost" type="java.lang.String" value="DefaultComboBoxModel model = new DefaultComboBoxModel(ParticipantGuess.values());&#xa;model.setSelectedItem(ParticipantGuess.UNKNOWN);&#xa;cbxGuess.setModel(model);"/>
       </AuxValues>
     </Component>
     <Component class="javax.swing.JLabel" name="lblGuess">

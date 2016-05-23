@@ -388,6 +388,7 @@ public class DeckCreationDialog extends BaseCardsDialog implements IObserver<Voi
                 destinationFolder = new File(System.getProperty("user.home"));
             }
             JFileChooser fc = new JFileChooser(destinationFolder);
+            fc.setFileFilter(new DirectoryFilter());
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fc.setAcceptAllFileFilterUsed(false);
             int returnVal = fc.showOpenDialog(this);

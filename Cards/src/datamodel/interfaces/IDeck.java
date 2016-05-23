@@ -6,6 +6,7 @@
 package datamodel.interfaces;
 
 import datamodel.enums.CardAlgorithmCategory;
+import datamodel.enums.ParticipantGuess;
 import java.io.Serializable;
 import java.util.List;
 
@@ -86,13 +87,13 @@ public interface IDeck extends Serializable, IDeckAlgorithm {
      * Accessor to retrieve the participants guess for this decks type.
      * @return - The CardAlgorithmCategory that the participant has set for this deck
      */
-    CardAlgorithmCategory getParticipantsGuess();
+    ParticipantGuess getParticipantsGuess();
     
     /**
      * Accessor to set the participants guess for this decks type.
-     * @param aGuess - The card algorithm type the participant guesses is in use.
+     * @param aGuess - The ParticipantGuess type the participant guesses is in use.
      */
-    void setParticipantsGuess(CardAlgorithmCategory aGuess);
+    void setParticipantsGuess(ParticipantGuess aGuess);
     
     /**
      * Tests if the currently stored participants guess for the algorithm type
@@ -101,5 +102,12 @@ public interface IDeck extends Serializable, IDeckAlgorithm {
      * the type of algorithm in use by this deck, False otherwise.
      */
     boolean isParticipantGuessCorrect();
+    
+    /**
+     * Tests if the experiments participant has made a guess as to this decks
+     * king / queen preference.
+     * @return False if the participants guess for this deck is UNKNOWN, True otherwise
+     */
+    boolean hasParticipantGuessSet();
     
 }

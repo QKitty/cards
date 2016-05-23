@@ -10,6 +10,9 @@ import datamodel.enums.DrawnCardsDisplayType;
 import datamodel.interfaces.IController;
 import datamodel.interfaces.IExperimentModel;
 import datamodel.interfaces.IPerson;
+import datamodel.people.Participant;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 import testing.TestHarness;
 import views.CardsMainForm;
 import views.DeckCreationDialogModel;
@@ -86,6 +89,20 @@ public class PrimaryController implements IController {
             this.mainWin.showInvalidParticipantWarning();
         }
     }
+    
+    @Override
+    public void endExperiment() throws IllegalStateException, IOException {
+        if(this.isExperimentRunning()){
+            if(this.model.completeExperiment()){
+                JOptionPane.showMessageDialog(mainWin, "Experiment result saved successfully!", "Experiment data saved", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(mainWin, "Error saving experiment data.", "Cannot save experiment result.", JOptionPane.ERROR_MESSAGE);
+            }
+            resetExperiment();
+        } else {
+            throw new IllegalStateException("No experiment is running.");
+        }
+    }
 
     @Override
     public DrawnCardsDisplayType getDrawnCardsDisplayType() {
@@ -114,7 +131,16 @@ public class PrimaryController implements IController {
     public DeckCreationDialogModel getDeckCreationDialogModel() {
         return this.deckCreationModel;
     }
-    //</editor-fold>
-
     
+    @Override
+    public void resetExperiment() {
+        this.setExperimentRunning(false);
+        this.model.reset();
+        int resetParticipant = JOptionPane.showConfirmDialog(mainWin, "Do you wish to clear the participant data?", "Resetting experiment...", JOptionPane.YES_NO_OPTION);
+        if(resetParticipant == JOptionPane.YES_OPTION){
+            this.model.setParticipant(new Participant());
+        }
+        this.mainWin.setView(null);
+    }
+    //</editor-fold>
 }

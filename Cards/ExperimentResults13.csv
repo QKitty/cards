@@ -1,0 +1,38 @@
+Initialising parameters:,,,,,Summary statistics:
+Deck Name,Deck Identity:,,,,Trials to decision (i.e. terminate sampling and guess at deck identities)
+UNKNOWN,KING HI INFORMATIVE,,,,4
+UNKNOWN,KING LOW INFORMATIVE
+UNKNOWN,QUEEN HI INFORMATIVE
+UNKNOWN,QUEEN LOW INFORMATIVE
+
+Type of trial:,FIXED_DECK
+
+Participant ID:
+1
+
+,,,,,,Number of kings drawn,Number of queens drawn,Number of 'other' cards drawn,Proportion (kings:queens) drawn,Proportion ([kings+queens]:others) drawn
+,,,,,UNKNOWN,1,0,0,1.0,1.0
+,,,,,UNKNOWN,0,0,1,NaN,0.0
+,,,,,UNKNOWN,0,1,0,0.0,1.0
+,,,,,UNKNOWN,0,0,1,NaN,0.0
+
+,,,,,,Sum of all cards turned
+,,,,,UNKNOWN,1
+,,,,,UNKNOWN,1
+,,,,,UNKNOWN,1
+,,,,,UNKNOWN,1
+
+,,,,,,Guess at deck ID,Correctly identified
+,,,,,UNKNOWN,KING,YES
+,,,,,UNKNOWN,QUEEN,NO
+,,,,,UNKNOWN,KING,NO
+,,,,,UNKNOWN,QUEEN,YES
+
+,,,,,Proportion correct ID (out of 4 - constrained to >1),0.5
+
+,,,,,Raw data:
+,,,,,Trial number,Time stamp,Deck choice,Card revealed
+,,,,,0,2016-05-23T18:33:51.796,UNKNOWN,K
+,,,,,1,2016-05-23T18:33:53.308,UNKNOWN,N
+,,,,,2,2016-05-23T18:33:54.549,UNKNOWN,Q
+,,,,,3,2016-05-23T18:33:56.079,UNKNOWN,N

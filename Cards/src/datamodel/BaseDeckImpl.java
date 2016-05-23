@@ -12,6 +12,7 @@ import datamodel.deckalgorithms.BaseDeckAlgorithm;
 import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.CardValue;
 import datamodel.enums.DeckType;
+import datamodel.enums.ParticipantGuess;
 import datamodel.interfaces.ICard;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckAlgorithm;
@@ -43,14 +44,14 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     private DeckStatistics stats;
     protected IDeckAlgorithm cardAlgorithm;
     protected List<ICard> drawnCards;
-    protected CardAlgorithmCategory currGuess;
+    protected ParticipantGuess currGuess;
     protected ISubject observers;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     public BaseDeckImpl() {
         this.drawnCards = new ArrayList<>();
-        this.currGuess = CardAlgorithmCategory.UNKNOWN;
+        this.currGuess = ParticipantGuess.UNKNOWN;
         observers = new ISubjectImpl();
         this.stats = new DeckStatistics();
         this.id = "UNKNOWN";
@@ -227,12 +228,12 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     }
     
     @Override
-    public CardAlgorithmCategory getParticipantsGuess() {
+    public ParticipantGuess getParticipantsGuess() {
         return this.currGuess;
     }
 
     @Override
-    public void setParticipantsGuess(CardAlgorithmCategory aGuess) {
+    public void setParticipantsGuess(ParticipantGuess aGuess) {
         if(null != aGuess){
             this.currGuess = aGuess;
             this.notifyObservers();
@@ -243,8 +244,13 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
 
     @Override
     public boolean isParticipantGuessCorrect() {
+        return this.cardAlgorithm.getAlgorithmCategory().isGuessCorrect(this.currGuess);
+    }
+    
+    @Override
+    public boolean hasParticipantGuessSet(){
         boolean result = false;
-        if(this.currGuess.equals(this.cardAlgorithm.getAlgorithmCategory())){
+        if(this.currGuess != ParticipantGuess.UNKNOWN){
             result = true;
         }
         return result;
