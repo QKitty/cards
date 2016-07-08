@@ -28,7 +28,7 @@ public class BaseCardPanelTester {
         IDeck createFixedDeck = TestHarness.createFixedDeck();
         BaseCardPanel panel = new BaseCardPanel();
         panel.setCardDeck(createFixedDeck);
-        panel.setSubPanelDisplayType(DrawnCardsDisplayType.CARD_HISTORY_DISPLAY);
+        panel.setSubPanelDisplayType(DrawnCardsDisplayType.LAST_CARD_DRAWN_DISPLAY);
         test.add(panel, BorderLayout.CENTER);
         test.pack();
         test.setVisible(true);

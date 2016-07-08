@@ -83,6 +83,7 @@ public class BaseDeckImpl implements IDeck, IXMLPersistable {
     @Override
     public ICard drawCard() {
         ICard drawnCard = this.cardAlgorithm.drawCard();
+        drawnCard.setShowingFace(true);
         drawnCards.add(drawnCard);
         drawnCard.registerObserver(this);
         this.stats.refresh();

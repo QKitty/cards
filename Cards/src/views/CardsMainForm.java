@@ -161,8 +161,9 @@ public class CardsMainForm extends BaseCardWindow {
     }//GEN-LAST:event_mnuTrialSettingsActionPerformed
 
     private void mnuParticipantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuParticipantActionPerformed
-        ParticipantEntryWindow window = new ParticipantEntryWindow();
+        ParticipantEntryWindow2 window = new ParticipantEntryWindow2();
         window.setController(controller);
+        ViewUtils.centreFrame(window);
         window.setVisible(true);
     }//GEN-LAST:event_mnuParticipantActionPerformed
 

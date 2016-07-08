@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class ExperimentModelImpl implements IExperimentModel {
@@ -212,7 +213,7 @@ public class ExperimentModelImpl implements IExperimentModel {
         }
         return result;
     }
-    
+
     @Override
     public ICardDrawnRecordList getCardDrawnRecordList() {
         return this.cardRecordList;
@@ -231,6 +232,30 @@ public class ExperimentModelImpl implements IExperimentModel {
             result = true;
         }
         return result;
+    }
+
+    @Override
+    public void scrambleDeckOrder() {
+        if (this.myDecks.size() > 1) {
+            int timesToRepeat = 2 * this.myDecks.size();
+            if (timesToRepeat < 20) {
+                timesToRepeat = 20;
+            }
+            Random randGen = new Random();
+            IDeck deck1, deck2;
+            int index1, index2;
+            int count = this.myDecks.size();
+            for (int i = 0; i < timesToRepeat; i++) {
+                index1 = randGen.nextInt(count);
+                index2 = randGen.nextInt(count);
+                if(index1 != index2){
+                    deck1 = this.myDecks.get(index1);
+                    deck2 = this.myDecks.get(index2);
+                    this.myDecks.set(index2, deck1);
+                    this.myDecks.set(index1, deck2);
+                }
+            }
+        }
     }
 //</editor-fold>
 
@@ -305,14 +330,14 @@ public class ExperimentModelImpl implements IExperimentModel {
         String fileName = "/ExperimentResults";
         File dest = new File(System.getProperty("user.dir") + fileName + ".csv");
         int count = 0;
-        while(dest.exists()){
+        while (dest.exists()) {
             dest = new File(System.getProperty("user.dir") + fileName + count + ".csv");
             count++;
         }
         result = ExperimentResultSaver.saveExperimentResult(this, dest);
         return result;
     }
-    
+
     private boolean inValidStateToComplete() {
         boolean result = false;
         List<Boolean> tests = new ArrayList<>();

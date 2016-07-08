@@ -35,7 +35,14 @@ public class TextFieldRoy extends JTextField {
         return result;
     }
     
-    
+    public boolean isNotDefaultMessage(){
+        boolean result = false;
+        String text = this.getText();
+        if(null != text && !text.isEmpty() && !text.equals(MESSAGE)){
+            result = true;
+        }
+        return result;
+    }
 
     private class DisplayManager implements FocusListener {
 

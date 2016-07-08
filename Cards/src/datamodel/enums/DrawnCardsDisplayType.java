@@ -9,6 +9,7 @@ import datamodel.interfaces.IDeck;
 import javax.swing.JPanel;
 import views.components.DrawnCardsHistoryDisplayPanel;
 import views.components.DrawnCardsLastCardDisplayPanel;
+import views.components.DrawnCardsLastCardPlusTextDisplayPanel;
 import views.components.DrawnCardsTextDisplayPanel;
 
 /**
@@ -31,7 +32,8 @@ public enum DrawnCardsDisplayType {
                 result = new DrawnCardsLastCardDisplayPanel(aDeck);
                 break;
             case TEXT_DISPLAY:
-                result = new DrawnCardsTextDisplayPanel(aDeck);
+                //result = new DrawnCardsTextDisplayPanel(aDeck);
+                result = new DrawnCardsLastCardPlusTextDisplayPanel(aDeck);
                 break;
             default:
                 result = new JPanel();

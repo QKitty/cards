@@ -124,6 +124,12 @@ public interface IExperimentModel extends Iterable<IDeck>, IObserver<Void>, ISub
     ICardDrawnRecordList getCardDrawnRecordList();
     
     /**
+     * Randomises the order of the decks in the model. Hence it is not possible to predict
+     * the order in which the decks are presented
+     */
+    void scrambleDeckOrder();
+    
+    /**
      * Retrieves the total number of cards drawn from all decks in this experiment model
      * @return - integer being the sum of all cards drawn from all decks in the experiment model
      */

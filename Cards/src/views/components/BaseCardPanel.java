@@ -24,6 +24,7 @@ import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import views.svg.CardFactory;
 
 /**
@@ -31,7 +32,7 @@ import views.svg.CardFactory;
  * @author qkitt
  */
 public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserver<Void> {
-
+    
     protected ICard dumbyBackCard;
     protected IDeck myCardDeck;
     protected DrawnCardsDisplayType subPanelType;
@@ -128,7 +129,7 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
                 //Draw Card
                 ICard nextCard = myCardDeck.drawCard();
                 nextCard.setShowingFace(true);
-                if(null != this.cardsDrawnRecordList){
+                if (null != this.cardsDrawnRecordList) {
                     this.cardsDrawnRecordList.recordCardDrawn(myCardDeck);
                 }
                 this.update();
@@ -168,127 +169,127 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
     public boolean isAlgorithmic() {
         return myCardDeck.isAlgorithmic();
     }
-
+    
     @Override
     public IDeckAlgorithm getDeckAlgorithm() {
         return myCardDeck.getDeckAlgorithm();
     }
-
+    
     @Override
     public boolean setDeckAlgorithm(IDeckAlgorithm alg) {
         return myCardDeck.setDeckAlgorithm(alg);
     }
-
+    
     @Override
     public List<ICard> getDrawnCardList() {
         return myCardDeck.getDrawnCardList();
     }
-
+    
     @Override
     public int cardsDrawnSinceLastSpecialCard() {
         return myCardDeck.cardsDrawnSinceLastSpecialCard();
     }
-
+    
     @Override
     public int getMaxCardDrawsBetweenSpecialCards() {
         return myCardDeck.getMaxCardDrawsBetweenSpecialCards();
     }
-
+    
     @Override
     public void setMaxCardDrawsBetweenSpecialCards(int max) throws IllegalArgumentException {
         myCardDeck.setMaxCardDrawsBetweenSpecialCards(max);
     }
-
+    
     @Override
     public ICard drawCard() {
         return myCardDeck.drawCard();
     }
-
+    
     @Override
     public boolean hasCardsRemaining() {
         return myCardDeck.hasCardsRemaining();
     }
-
+    
     @Override
     public int getNoOfRemainingCards() {
         return myCardDeck.getNoOfRemainingCards();
     }
-
+    
     @Override
     public DeckType getDeckType() {
         return myCardDeck.getDeckType();
     }
-
+    
     @Override
     public CardAlgorithmCategory getAlgorithmCategory() {
         return myCardDeck.getAlgorithmCategory();
     }
-
+    
     @Override
     public double getProbabilityOfSpecialCard() {
         return myCardDeck.getProbabilityOfSpecialCard();
     }
-
+    
     @Override
     public void setProbabilityOfSpecialCard(double probability) throws IllegalArgumentException {
         myCardDeck.setProbabilityOfSpecialCard(probability);
     }
-
+    
     @Override
     public void reset() {
         this.myCardDeck.reset();
     }
-
+    
     @Override
     public String getId() {
         return this.myCardDeck.getId();
     }
-
+    
     @Override
     public void setId(String newId) {
         this.myCardDeck.setId(newId);
     }
-
+    
     @Override
     public int getNoOfKingsDrawn() {
         return this.myCardDeck.getNoOfKingsDrawn();
     }
-
+    
     @Override
     public int getNoOfQueensDrawn() {
         return this.myCardDeck.getNoOfQueensDrawn();
     }
-
+    
     @Override
     public int getNoOfOtherCardsDrawn() {
         return this.myCardDeck.getNoOfOtherCardsDrawn();
     }
-
+    
     @Override
     public double getProportionOfKingsVKingsAndQueensDrawn() {
         return this.myCardDeck.getProportionOfKingsVKingsAndQueensDrawn();
     }
-
+    
     @Override
     public double getProportionOfKingsAndQueensDrawn() {
         return this.myCardDeck.getProportionOfKingsAndQueensDrawn();
     }
-
+    
     @Override
     public ParticipantGuess getParticipantsGuess() {
         return this.myCardDeck.getParticipantsGuess();
     }
-
+    
     @Override
     public void setParticipantsGuess(ParticipantGuess aGuess) {
         this.myCardDeck.setParticipantsGuess(aGuess);
     }
-
+    
     @Override
     public boolean isParticipantGuessCorrect() {
         return this.myCardDeck.isParticipantGuessCorrect();
     }
-
+    
     @Override
     public boolean hasParticipantGuessSet() {
         return this.myCardDeck.hasParticipantGuessSet();
@@ -300,12 +301,12 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
     public Class<?> getFactoryClass() {
         throw new UnsupportedOperationException("Not supported by GUI components."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public String getFactoryMethodName() {
         throw new UnsupportedOperationException("Not supported GUI components."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public Object[] getFactoryArgs() {
         throw new UnsupportedOperationException("Not supported GUI components."); //To change body of generated methods, choose Tools | Templates.
@@ -317,32 +318,32 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
     public boolean registerObserver(IObserver o) {
         return observers.registerObserver(o);
     }
-
+    
     @Override
     public boolean removeObserver(IObserver o) {
         return observers.removeObserver(o);
     }
-
+    
     @Override
     public void notifyObservers() {
         observers.notifyObservers();
     }
-
+    
     @Override
     public <T> void notifyObservers(T data) {
         observers.notifyObservers(data);
     }
-
+    
     @Override
     public Set<IObserver> removeAllObservers() {
         return observers.removeAllObservers();
     }
-
+    
     @Override
     public boolean registerObserver(Collection<? extends IObserver> observerCollection) {
         return observers.registerObserver(observerCollection);
     }
-
+    
     @Override
     public void update() {
         if (null != this.myCardDeck) {
@@ -361,7 +362,7 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
             throw new NullPointerException("Cannot set sub panel display type to NULL.");
         }
     }
-
+    
     public boolean hasGuess() {
         boolean result = false;
         if (null != this.myCardDeck && this.cbxGuess.getSelectedItem() != ParticipantGuess.UNKNOWN) {
@@ -370,10 +371,10 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
         return result;
     }
     
-    public void setCardsDrawnRecordList(ICardDrawnRecordList recordList){
+    public void setCardsDrawnRecordList(ICardDrawnRecordList recordList) {
         this.cardsDrawnRecordList = recordList;
     }
-
+    
     private void setIcon() {
         int width = lblCardBack.getWidth();
         int height = lblCardBack.getHeight();
@@ -388,10 +389,11 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
             });
         }
     }
-
+    
     private void setSubPanel(JPanel aPanel) {
         scrSubPanel.setViewportView(aPanel);
+        invalidate();
         repaint();
     }
-
+    
 }

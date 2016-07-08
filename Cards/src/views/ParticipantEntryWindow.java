@@ -187,7 +187,7 @@ public class ParticipantEntryWindow extends BaseCardWindow {
                 this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                 JOptionPane.showMessageDialog(this, "Participant data saved.", "Participant updated...", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Participant data provided is invalid. \nEnsure you have entered an ID, first and last name & either an E-Mail or phone number.", "Invalid data...", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Participant data provided is invalid. \nEnsure you have entered an ID", "Invalid data...", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Primary controller is not set please contact the application developer.", "System error...", JOptionPane.ERROR_MESSAGE);

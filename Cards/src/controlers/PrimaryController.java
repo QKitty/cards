@@ -80,6 +80,7 @@ public class PrimaryController implements IController {
         if (this.model.hasValidParticipant()) {
             //Ask for trial ID
             //Create display
+            this.model.scrambleDeckOrder();
             ExperimentDisplayPanel expDisplay = new ExperimentDisplayPanel(this);
             //Create "Trial"
             //Update main window

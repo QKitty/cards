@@ -64,7 +64,7 @@ public class FrequencyInfiniteDeckAlgorithm extends BaseDeckAlgorithm {
         if(Math.abs(deltaKingFreq) > deltaF || Math.abs(deltaQueenFreq) > deltaF || Math.abs(deltaOtherFreq) > deltaF){
             //We need to select a card based on frequency.
             //Find the type of card with the greatest delta frequency
-            List<Double> deltaFs = new ArrayList();
+            List<Double> deltaFs = new ArrayList<>();
             deltaFs.add(deltaKingFreq);
             deltaFs.add(deltaQueenFreq);
             deltaFs.add(deltaOtherFreq);

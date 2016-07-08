@@ -37,6 +37,11 @@ public class Participant implements IPerson, IValidateable {
         this.phoneNumber = this.DEFAULTVALUE;
         this.eMail = this.DEFAULTVALUE;
     }
+    
+    public Participant(String newId){
+        this();
+        this.setIdString(newId);
+    }
 
     public Participant(int newId, String newFName, String newLName, String newPhoneNumber, String newEMail) {
         this();
@@ -213,15 +218,22 @@ public class Participant implements IPerson, IValidateable {
     @Override
     public boolean isInValidState() {
         boolean result = false;
-        if(!this.idString.isEmpty() && !this.firstName.isEmpty() && !this.lastName.isEmpty()){
-            if(!this.eMail.isEmpty() || !this.phoneNumber.isEmpty()){
-                if(!this.idString.equals(DEFAULTVALUE) 
-                        && !this.firstName.equals(DEFAULTVALUE)
-                        && !this.lastName.equals(DEFAULTVALUE)
-                        && !this.eMail.equals(DEFAULTVALUE)
-                        && !this.phoneNumber.equals(DEFAULTVALUE)){
-                    result = true;
-                }
+        //OLD CODE REMOVE
+//        if(!this.idString.isEmpty() && !this.firstName.isEmpty() && !this.lastName.isEmpty()){
+//            if(!this.eMail.isEmpty() || !this.phoneNumber.isEmpty()){
+//                if(!this.idString.equals(DEFAULTVALUE) 
+//                        && !this.firstName.equals(DEFAULTVALUE)
+//                        && !this.lastName.equals(DEFAULTVALUE)
+//                        && !this.eMail.equals(DEFAULTVALUE)
+//                        && !this.phoneNumber.equals(DEFAULTVALUE)){
+//                    result = true;
+//                }
+//            }
+//        }
+        //NEW CODE TO VALIDATE THAT AN ID ONLY EXISTS
+        if(null != this.idString && !this.idString.isEmpty()){
+            if(!this.idString.equals(DEFAULTVALUE)){
+                result = true;
             }
         }
         return result;
