@@ -39,8 +39,6 @@ public class CardsMainForm extends BaseCardWindow {
 
         scrMainViewPane = new javax.swing.JScrollPane();
         mnuBar = new javax.swing.JMenuBar();
-        mnuFile = new javax.swing.JMenu();
-        mnuItemSaveTrialData = new javax.swing.JMenuItem();
         mnuEdit = new javax.swing.JMenu();
         mnuTrialSettings = new javax.swing.JMenuItem();
         mnuParticipant = new javax.swing.JMenuItem();
@@ -52,21 +50,6 @@ public class CardsMainForm extends BaseCardWindow {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         scrMainViewPane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        mnuFile.setText("File");
-
-        mnuItemSaveTrialData.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        mnuItemSaveTrialData.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/disk-return-black.png"))); // NOI18N
-        mnuItemSaveTrialData.setText("Save Trial Data");
-        mnuItemSaveTrialData.setToolTipText("Save previous trial data");
-        mnuItemSaveTrialData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuItemSaveTrialDataActionPerformed(evt);
-            }
-        });
-        mnuFile.add(mnuItemSaveTrialData);
-
-        mnuBar.add(mnuFile);
 
         mnuEdit.setText("Edit");
 
@@ -152,10 +135,6 @@ public class CardsMainForm extends BaseCardWindow {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mnuItemSaveTrialDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItemSaveTrialDataActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnuItemSaveTrialDataActionPerformed
-
     private void mnuTrialSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuTrialSettingsActionPerformed
         showTrialSettings();
     }//GEN-LAST:event_mnuTrialSettingsActionPerformed
@@ -230,8 +209,6 @@ public class CardsMainForm extends BaseCardWindow {
     private javax.swing.JMenuItem mnuCompleteExperiment;
     private javax.swing.JMenuItem mnuCreateDecks;
     private javax.swing.JMenu mnuEdit;
-    private javax.swing.JMenu mnuFile;
-    private javax.swing.JMenuItem mnuItemSaveTrialData;
     private javax.swing.JMenuItem mnuParticipant;
     private javax.swing.JMenuItem mnuTrialSettings;
     private javax.swing.JScrollPane scrMainViewPane;
