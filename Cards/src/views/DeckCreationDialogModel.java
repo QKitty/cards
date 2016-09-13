@@ -337,6 +337,9 @@ public class DeckCreationDialogModel extends SubjectSetBaseClass implements IVal
     
     public static File getDefaultDeckDirectory(){
         File result = new File(System.getProperty("user.home") + File.separator + "GeneratedDecks");
+        if(!result.exists()){
+            result.mkdir();
+        }
         return result;
     }
 
