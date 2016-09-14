@@ -12,6 +12,8 @@ import datamodel.interfaces.IController;
 import datamodel.interfaces.IDeckCardFileScanner;
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -53,6 +55,8 @@ public class TrialSetupDialog extends BaseCardsDialog implements IObserver<Void>
         File defaultTarget = DeckCreationDialogModel.getDefaultDeckDirectory();
         this.scanner = new DeckCardFileScanner(defaultTarget);
         this.scanner.registerObserver(this);
+        txtPath.addFocusListener(new ScanPathChanger());
+        btnBrowseDir.addFocusListener(new ScanPathChanger());
         this.invalidate();
     }
 
@@ -422,6 +426,24 @@ public class TrialSetupDialog extends BaseCardsDialog implements IObserver<Void>
                 }
             }
         }
+    }
+    
+    private class ScanPathChanger extends FocusAdapter {
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            File currTargetDirectory = scanner.getTargetDirectory();
+            File newDirTarget = new File(txtPath.getText());
+            if(newDirTarget.exists() && newDirTarget.isDirectory()){
+                if(!newDirTarget.equals(currTargetDirectory)){
+                    scanner.setTargetDirectory(newDirTarget);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Directory " + newDirTarget.getAbsolutePath() + " does not exist or is not a directory!", "Directory scan will fail...", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+        
     }
 //</editor-fold>
 }

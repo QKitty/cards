@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 /**
  * The applications main form
+ *
  * @author rtucker
  */
 public class CardsMainForm extends BaseCardWindow {
@@ -218,27 +219,31 @@ public class CardsMainForm extends BaseCardWindow {
     public void update() {
         configureMenus();
     }
-    
-    public void setView(JPanel aPanel){
-        if(null != aPanel){
+
+    public void setView(JPanel aPanel) {
+        if (null != aPanel) {
             scrMainViewPane.setViewportView(aPanel);
-        }else{
+        } else {
             JPanel blank = new JPanel();
             scrMainViewPane.setViewportView(blank);
         }
     }
-    
-    public void showInvalidParticipantWarning(){
+
+    public void showInvalidParticipantWarning() {
         JOptionPane.showMessageDialog(this, "Participant details are invalid. Please enter valid details.", "Error cannot start experiment...", JOptionPane.ERROR_MESSAGE);
         this.mnuParticipantActionPerformed(null);
     }
-    
+
     private void showTrialSettings() {
-        TrialSetupDialog settingsWin = new TrialSetupDialog(this, true);
-        settingsWin.setModal(true);
-        settingsWin.setController(controller);
-        ViewUtils.centreDialog(settingsWin);
-        settingsWin.setVisible(true);
+        try {
+            TrialSetupDialog settingsWin = new TrialSetupDialog(this, true);
+            settingsWin.setModal(true);
+            settingsWin.setController(controller);
+            ViewUtils.centreDialog(settingsWin);
+            settingsWin.setVisible(true);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error message is: " + ex.getMessage(), "Error cannot access experiment settings...", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void initialise() {
@@ -250,7 +255,7 @@ public class CardsMainForm extends BaseCardWindow {
     }
 
     private void configureMenus() {
-        if(this.controller.isExperimentRunning()){
+        if (this.controller.isExperimentRunning()) {
             //Disable Participant entry, Equipment setup & Start Experiment
             mnuBeginTrial.setEnabled(false);
             mnuParticipant.setEnabled(false);
@@ -261,7 +266,7 @@ public class CardsMainForm extends BaseCardWindow {
             //Enable Participant entry, Experiment setup & Start Experiment
             int noOfDecks = this.controller.getExpModel().getNoOfDecks();
             boolean hasValidParticipant = this.controller.getExpModel().hasValidParticipant();
-            if(0 < noOfDecks && hasValidParticipant){
+            if (0 < noOfDecks && hasValidParticipant) {
                 mnuBeginTrial.setEnabled(true);
             } else {
                 mnuBeginTrial.setEnabled(false);
