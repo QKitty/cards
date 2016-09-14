@@ -34,7 +34,7 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
 
     private ICard dumbyBackCard;
     private IDeck myCardDeck;
-    private ScheduledExecutorService tp;
+//    private ScheduledExecutorService tp;
     private CardDrawingAnimation currAnimation;
 
     /**
@@ -43,7 +43,7 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
     public CardDrawnHistoryPanel() {
         initComponents();
         drawnCardsPanel.registerObserver(this);
-        tp = Executors.newSingleThreadScheduledExecutor();
+//        tp = Executors.newSingleThreadScheduledExecutor();
         java.awt.EventQueue.invokeLater(() -> {
             setIcon();
         });
@@ -275,11 +275,11 @@ public class CardDrawnHistoryPanel extends javax.swing.JPanel implements IDeck, 
         }
     }
     
-    public void destroy(){
-        if(!tp.isShutdown()){
-            tp.shutdownNow();
-        }
-    }
+//    public void destroy(){
+//        if(!tp.isShutdown()){
+//            tp.shutdownNow();
+//        }
+//    }
 
     @Override
     protected void paintComponent(Graphics grphcs) {

@@ -27,7 +27,7 @@ public class PrimaryController implements IController {
 //<editor-fold defaultstate="collapsed" desc="Attributes">
     private final IExperimentModel model;
     private boolean blnExpRunning;
-    private DrawnCardsDisplayType displayType;
+    //private DrawnCardsDisplayType displayType;
     private final CardsMainForm mainWin;
     private final DeckCreationDialogModel deckCreationModel;
 //</editor-fold>
@@ -37,7 +37,7 @@ public class PrimaryController implements IController {
         this.mainWin = newMainWindow;
         this.model = new ExperimentModelImpl();
         this.blnExpRunning = false;
-        this.displayType = DrawnCardsDisplayType.TEXT_DISPLAY;
+        //this.displayType = DrawnCardsDisplayType.TEXT_DISPLAY;
         this.deckCreationModel = new DeckCreationDialogModel();
     }
 //</editor-fold>
@@ -107,15 +107,12 @@ public class PrimaryController implements IController {
 
     @Override
     public DrawnCardsDisplayType getDrawnCardsDisplayType() {
-        return this.displayType;
+        return this.model.getDrawnCardsDisplayType();
     }
 
     @Override
     public void setDrawnCardsDisplayType(DrawnCardsDisplayType aType) {
-        if (null != aType && aType != this.displayType) {
-            this.displayType = aType;
-            this.model.update();
-        }
+        this.model.setDrawnCardsDisplayType(aType);
     }
 
     @Override

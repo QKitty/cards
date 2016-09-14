@@ -24,7 +24,6 @@ import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.Icon;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import views.svg.CardFactory;
 
 /**
@@ -133,6 +132,7 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
                     this.cardsDrawnRecordList.recordCardDrawn(myCardDeck);
                 }
                 this.update();
+                //Move scroll bar (if shown) to the right as far as it can go
             }
         }
     }//GEN-LAST:event_lblCardBackMouseClicked
@@ -395,5 +395,4 @@ public class BaseCardPanel extends javax.swing.JPanel implements IDeck, IObserve
         invalidate();
         repaint();
     }
-    
 }

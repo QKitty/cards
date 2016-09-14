@@ -8,6 +8,7 @@ package datamodel.interfaces;
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import com.gmail.qkitty6.patterns.observer.ISubject;
 import datamodel.ICardDrawnRecordList;
+import datamodel.enums.DrawnCardsDisplayType;
 import java.io.IOException;
 import java.util.List;
 
@@ -141,4 +142,25 @@ public interface IExperimentModel extends Iterable<IDeck>, IObserver<Void>, ISub
         }
         return count;
     }
+    
+    /**
+     * Accessor to retrieve the display type used in the experiment
+     * @return A DrawnCardsDisplayType that describes how the cards drawn should
+     * be presented.
+     */
+    DrawnCardsDisplayType getDrawnCardsDisplayType();
+    
+    /**
+     * Accessor to set the display type used in the experiment
+     * @param newDisplayType - DrawnCardsDisplayType that describes how the cards drawn should
+     * be presented.
+     * @return Boolean true if the display type was accepted and stored, False otherwise.
+     */
+    boolean setDrawnCardsDisplayType(DrawnCardsDisplayType newDisplayType);
+    
+    /**
+     * Test to see if the Experiment Model has a valid set of guesses
+     * @return Boolean True if their are an equal number of King and Queen guesses. False otherwise
+     */
+    boolean hasValidGuesses();
 }

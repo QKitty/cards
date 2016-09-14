@@ -41,8 +41,11 @@ public class ExperimentResultSaver {
                     boolean blnFreeFileName = false;
                     File tempFile = null;
                     while (!blnFreeFileName) {
-                        StringBuilder path = new StringBuilder(System.getProperty("user.home"));
-                        path.append("/ExperimentResult");
+                        StringBuilder path = new StringBuilder(System.getProperty("user.dir"));
+                        //path.append("/ExperimentResult");
+                        path.append("/ExperimentParticipantNo");
+                        path.append(experimentModel.getParticipant().getIdString());
+                        path.append("Result");
                         path.append(fileNo);
                         path.append(".csv");
                         tempFile = new File(path.toString());
@@ -74,7 +77,9 @@ public class ExperimentResultSaver {
                     }
                 }
                 data.append("\n");
-                data.append("Type of trial:,").append(experimentModel.getDeck(0).getDeckType().toString()).append("\n\n");
+                data.append("Type of trial:,").append(experimentModel.getDeck(0).getDeckType().toString()).append("\n");
+                data.append("Type of display used:,").append(experimentModel.getDrawnCardsDisplayType().toString()).append("\n");
+                data.append("\n");
                 data.append("Participant ID:\n");
                 data.append(experimentModel.getParticipant().getIdNo());
                 data.append("\n");

@@ -5,7 +5,6 @@
  */
 package datamodel.interfaces;
 
-import datamodel.enums.CardAlgorithmCategory;
 import datamodel.enums.ParticipantGuess;
 import java.io.Serializable;
 import java.util.List;

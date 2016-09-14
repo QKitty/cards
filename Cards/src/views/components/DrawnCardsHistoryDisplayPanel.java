@@ -9,18 +9,21 @@ import com.gmail.qkitty6.patterns.observer.IObserver;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IDeckManager;
 import java.util.ArrayList;
+import javax.swing.JScrollBar;
 
 /**
  *
  * @author qkitt
  */
 public class DrawnCardsHistoryDisplayPanel extends javax.swing.JPanel implements IObserver<Void>, IDeckManager {
-    
+
     private IDeck myCardDeck;
 
     /**
      * Creates new form DrawnCardsHistoryDisplayPanel
-     * @param aDeck - IDeck interface to the card deck that will provide data to the panel
+     *
+     * @param aDeck - IDeck interface to the card deck that will provide data to
+     * the panel
      */
     public DrawnCardsHistoryDisplayPanel(IDeck aDeck) {
         initComponents();
@@ -78,10 +81,15 @@ public class DrawnCardsHistoryDisplayPanel extends javax.swing.JPanel implements
 
     @Override
     public void update() {
-        if(null != this.myCardDeck){
+        if (null != this.myCardDeck) {
             cardListPanel.replaceList(this.myCardDeck.getDrawnCardList());
         } else {
             cardListPanel.replaceList(new ArrayList<>());
         }
+        //Put the horizontal scroll bar as far to the right as possible
+        java.awt.EventQueue.invokeLater(() -> {
+            JScrollBar hsb = jScrollPane1.getHorizontalScrollBar();
+            hsb.setValue(hsb.getMaximum());
+        });
     }
 }

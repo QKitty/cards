@@ -8,6 +8,8 @@ package datamodel;
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import com.gmail.qkitty6.patterns.observer.ISubject;
 import com.gmail.qkitty6.patterns.observer.ISubjectSetImpl;
+import datamodel.enums.DrawnCardsDisplayType;
+import datamodel.enums.ParticipantGuess;
 import datamodel.interfaces.IController;
 import datamodel.interfaces.IDeck;
 import datamodel.interfaces.IExperimentModel;
@@ -33,39 +35,48 @@ public class ExperimentModelImpl implements IExperimentModel {
     private IPerson participant;
     private final ICardDrawnRecordList cardRecordList;
     private IController controller;
+    private DrawnCardsDisplayType displayType;
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Constructors">
     public ExperimentModelImpl() {
         myDecks = new ArrayList<>();
         this.experimentComplete = false;
+        this.displayType = DrawnCardsDisplayType.TEXT_DISPLAY;
         this.participant = new Participant();
         this.cardRecordList = new CardDrawnRecordList();
         this.observers = new ISubjectSetImpl();
     }
 
     public ExperimentModelImpl(IPerson aParticipant) {
-        myDecks = new ArrayList<>();
-        this.experimentComplete = false;
+        this();
         this.participant = aParticipant;
-        this.cardRecordList = new CardDrawnRecordList();
-        this.observers = new ISubjectSetImpl();
+//        myDecks = new ArrayList<>();
+//        this.experimentComplete = false;
+//        this.participant = aParticipant;
+//        this.cardRecordList = new CardDrawnRecordList();
+//        this.observers = new ISubjectSetImpl();
     }
 
     public ExperimentModelImpl(List<IDeck> decks) {
-        myDecks = new ArrayList<>(decks);
-        this.experimentComplete = false;
-        this.participant = new Participant();
-        this.cardRecordList = new CardDrawnRecordList();
-        this.observers = new ISubjectSetImpl();
+        this();
+        myDecks.addAll(decks);
+//        myDecks = new ArrayList<>(decks);
+//        this.experimentComplete = false;
+//        this.participant = new Participant();
+//        this.cardRecordList = new CardDrawnRecordList();
+//        this.observers = new ISubjectSetImpl();
     }
 
     public ExperimentModelImpl(IPerson aParticipant, List<IDeck> decks) {
-        myDecks = new ArrayList<>(decks);
-        this.experimentComplete = false;
+        this();
         this.participant = aParticipant;
-        this.cardRecordList = new CardDrawnRecordList();
-        this.observers = new ISubjectSetImpl();
+        myDecks.addAll(decks);
+//        myDecks = new ArrayList<>(decks);
+//        this.experimentComplete = false;
+//        this.participant = aParticipant;
+//        this.cardRecordList = new CardDrawnRecordList();
+//        this.observers = new ISubjectSetImpl();
     }
 //</editor-fold>
 
@@ -248,7 +259,7 @@ public class ExperimentModelImpl implements IExperimentModel {
             for (int i = 0; i < timesToRepeat; i++) {
                 index1 = randGen.nextInt(count);
                 index2 = randGen.nextInt(count);
-                if(index1 != index2){
+                if (index1 != index2) {
                     deck1 = this.myDecks.get(index1);
                     deck2 = this.myDecks.get(index2);
                     this.myDecks.set(index2, deck1);
@@ -256,6 +267,27 @@ public class ExperimentModelImpl implements IExperimentModel {
                 }
             }
         }
+    }
+
+    @Override
+    public DrawnCardsDisplayType getDrawnCardsDisplayType() {
+        return this.displayType;
+    }
+
+    @Override
+    public boolean setDrawnCardsDisplayType(DrawnCardsDisplayType newDisplayType) {
+        boolean result = false;
+        if (null != newDisplayType && newDisplayType != this.displayType) {
+            this.displayType = newDisplayType;
+            result = true;
+            this.update();
+        }
+        return result;
+    }
+    
+    @Override
+    public boolean hasValidGuesses() {
+        return inValidStateToComplete();
     }
 //</editor-fold>
 
@@ -327,30 +359,57 @@ public class ExperimentModelImpl implements IExperimentModel {
 //<editor-fold defaultstate="collapsed" desc="Private helper methods">
     private boolean saveExperiment() throws IOException {
         boolean result = false;
-        String fileName = "/ExperimentResults";
-        File dest = new File(System.getProperty("user.dir") + fileName + ".csv");
-        int count = 0;
-        while (dest.exists()) {
-            dest = new File(System.getProperty("user.dir") + fileName + count + ".csv");
-            count++;
-        }
-        result = ExperimentResultSaver.saveExperimentResult(this, dest);
+//        String fileName = "/ExperimentResults";
+//        File dest = new File(System.getProperty("user.dir") + fileName + ".csv");
+//        int count = 0;
+//        while (dest.exists()) {
+//            dest = new File(System.getProperty("user.dir") + fileName + count + ".csv");
+//            count++;
+//        }
+//      Creating the default file name was moved into the saveExperimentResult method enter NULL as the file.
+        result = ExperimentResultSaver.saveExperimentResult(this, null);
         return result;
     }
 
     private boolean inValidStateToComplete() {
         boolean result = false;
         List<Boolean> tests = new ArrayList<>();
+        int kingCount, queenCount, decksCount;
+        kingCount = 0;
+        queenCount = 0;
+        decksCount = 0;
         for (IDeck currDeck : this) {
             tests.add(currDeck.hasParticipantGuessSet());
+            decksCount++;
+            ParticipantGuess participantsGuess = currDeck.getParticipantsGuess();
+            switch(participantsGuess){
+                case KING:
+                    kingCount++;
+                    break;
+                case QUEEN:
+                    queenCount++;
+                    break;
+            }
         }
         int count = 0;
         count = tests.stream().filter((currVal) -> (currVal)).map((_item) -> 1).reduce(count, Integer::sum);
         if (count == tests.size()) {
-            result = true;
+            //Guess has been made for every deck now check that for an even number of decks the 
+            //guesses are split 50 / 50 between king and queen.
+            if(0 == (decksCount % 2) && (kingCount == queenCount)){
+                result = true;
+            } else {
+                //Odd number of decks make sure the king / queen split is within one of each other
+                int diff = Math.abs(kingCount - queenCount);
+                if(1 == diff){
+                    result = true;
+                }
+            }
         }
         return result;
     }
 //</editor-fold>
+
+
 
 }

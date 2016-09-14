@@ -8,6 +8,7 @@ package views.components;
 import com.gmail.qkitty6.patterns.observer.IObserver;
 import com.gmail.qkitty6.patterns.observer.ISubject;
 import datamodel.enums.DrawnCardsDisplayType;
+import datamodel.enums.ParticipantGuess;
 import datamodel.interfaces.IControllable;
 import datamodel.interfaces.IController;
 import datamodel.interfaces.IDeck;
@@ -27,16 +28,18 @@ import javax.swing.JPanel;
 
 /**
  * Display panel shown when the experiment is running
+ *
  * @author qkitt
  */
 public class ExperimentDisplayPanel extends javax.swing.JPanel implements IControllable, IObserver<Void>, ISubject {
-    
+
     private final IController conn;
     private final List<BaseCardPanel> displayPanels;
     private final JButton btnEndTrial;
 
     /**
      * Creates new form ExperimentDisplayPanel
+     *
      * @param newConn - The controller for this panel
      */
     public ExperimentDisplayPanel(IController newConn) {
@@ -72,7 +75,7 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
     public IController getController() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public boolean setController(IController aController) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -84,27 +87,27 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
     public boolean registerObserver(IObserver io) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public boolean removeObserver(IObserver io) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void notifyObservers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public <T> void notifyObservers(T t) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public Set<IObserver> removeAllObservers() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public boolean registerObserver(Collection<? extends IObserver> clctn) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -114,9 +117,9 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
 //<editor-fold defaultstate="collapsed" desc="IObserver implementation">
     @Override
     public void update() {
-        if(this.hasValidGuesses()){
+        if (this.hasValidGuesses()) {
             this.btnEndTrial.setEnabled(true);
-        }else{
+        } else {
             this.btnEndTrial.setEnabled(false);
         }
     }
@@ -129,7 +132,7 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
         List<IDeck> decks = expModel.getDecks();
         JPanel pnlViewer = new JPanel(new GridLayout(0, decks.size()));
         int i = 0;
-        for(IDeck currDeck : decks){
+        for (IDeck currDeck : decks) {
             BaseCardPanel aDisplay = new BaseCardPanel();
             aDisplay.setCardsDrawnRecordList(expModel.getCardDrawnRecordList());
             aDisplay.setCardDeck(currDeck);
@@ -144,9 +147,9 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                conn.endExperiment();
-                } catch (IllegalStateException ex){
+                try {
+                    conn.endExperiment();
+                } catch (IllegalStateException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Unable to end experiment", JOptionPane.ERROR_MESSAGE);
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Cannot save experiment data.", JOptionPane.ERROR_MESSAGE);
@@ -156,17 +159,11 @@ public class ExperimentDisplayPanel extends javax.swing.JPanel implements IContr
         this.add(this.btnEndTrial, BorderLayout.SOUTH);
         this.revalidate();
     }
-    
-    private boolean hasValidGuesses(){
+
+    private boolean hasValidGuesses() {
         boolean result = false;
-        if(0 < this.displayPanels.size()){
-            List<Boolean> panelResults = new ArrayList<>();
-            for(BaseCardPanel currPanel : this.displayPanels){
-                panelResults.add(currPanel.hasGuess());
-            }
-            if(!panelResults.contains(false)){
-                result = true;
-            }
+        if (0 < this.displayPanels.size()) {
+            result = conn.getExpModel().hasValidGuesses();
         }
         return result;
     }

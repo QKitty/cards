@@ -1,0 +1,64 @@
+Initialising parameters:,,,,,Summary statistics:
+Deck Name,Deck Identity:,,,,Trials to decision (i.e. terminate sampling and guess at deck identities)
+Deck 3,QUEEN HI INFORMATIVE,,,,29
+Deck 1,KING HI INFORMATIVE
+Deck 2,KING LOW INFORMATIVE
+Deck 4,QUEEN LOW INFORMATIVE
+
+Type of trial:,FIXED_DECK
+Type of display used:,History of drawn cards.
+
+Participant ID:
+1
+
+,,,,,,Number of kings drawn,Number of queens drawn,Number of 'other' cards drawn,Proportion (kings:queens) drawn,Proportion ([kings+queens]:others) drawn
+,,,,,Deck 3,3,14,9,0.17647058823529413,0.6538461538461539
+,,,,,Deck 1,1,0,0,1.0,1.0
+,,,,,Deck 2,0,1,0,0.0,1.0
+,,,,,Deck 4,0,0,1,0.0,0.0
+
+,,,,,,Sum of all cards turned
+,,,,,Deck 3,26
+,,,,,Deck 1,1
+,,,,,Deck 2,1
+,,,,,Deck 4,1
+
+,,,,,,Guess at deck ID,Correctly identified
+,,,,,Deck 3,KING,NO
+,,,,,Deck 1,QUEEN,NO
+,,,,,Deck 2,KING,YES
+,,,,,Deck 4,QUEEN,YES
+
+,,,,,Proportion correct ID (out of 4 - constrained to >1),0.5
+
+,,,,,Raw data:
+,,,,,Trial number,Time stamp,Deck choice,Card revealed
+,,,,,0,2016-09-14T15:24:52.159,Deck 3,N
+,,,,,1,2016-09-14T15:24:53.112,Deck 3,Q
+,,,,,2,2016-09-14T15:24:53.795,Deck 3,Q
+,,,,,3,2016-09-14T15:24:55.681,Deck 3,Q
+,,,,,4,2016-09-14T15:24:56.485,Deck 3,N
+,,,,,5,2016-09-14T15:24:57.268,Deck 3,Q
+,,,,,6,2016-09-14T15:24:58.034,Deck 3,K
+,,,,,7,2016-09-14T15:24:58.935,Deck 3,Q
+,,,,,8,2016-09-14T15:24:59.789,Deck 3,Q
+,,,,,9,2016-09-14T15:25:00.829,Deck 3,Q
+,,,,,10,2016-09-14T15:25:01.820,Deck 3,Q
+,,,,,11,2016-09-14T15:25:03.036,Deck 3,Q
+,,,,,12,2016-09-14T15:25:04.156,Deck 3,K
+,,,,,13,2016-09-14T15:25:05.244,Deck 3,N
+,,,,,14,2016-09-14T15:25:06.316,Deck 3,N
+,,,,,15,2016-09-14T15:25:07.395,Deck 3,N
+,,,,,16,2016-09-14T15:25:08.781,Deck 3,N
+,,,,,17,2016-09-14T15:25:09.875,Deck 3,Q
+,,,,,18,2016-09-14T15:25:11.037,Deck 3,Q
+,,,,,19,2016-09-14T15:25:13.961,Deck 3,N
+,,,,,20,2016-09-14T15:25:17.361,Deck 3,Q
+,,,,,21,2016-09-14T15:25:20.270,Deck 3,N
+,,,,,22,2016-09-14T15:25:22.550,Deck 3,Q
+,,,,,23,2016-09-14T15:25:26.537,Deck 3,N
+,,,,,24,2016-09-14T15:25:28.898,Deck 3,K
+,,,,,25,2016-09-14T15:25:31.558,Deck 3,Q
+,,,,,26,2016-09-14T15:25:34.021,Deck 1,K
+,,,,,27,2016-09-14T15:25:35.323,Deck 2,Q
+,,,,,28,2016-09-14T15:25:36.539,Deck 4,N
